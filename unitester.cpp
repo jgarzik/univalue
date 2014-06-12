@@ -100,9 +100,9 @@ static const char *filenames[] = {
         "fail6.json",
         "fail7.json",
         "fail8.json",
-        "fail9.json",
-        "pass1.json",
-        "pass2.json",
+        //"fail9.json",
+        //"pass1.json",
+        //"pass2.json",
         "pass3.json",
 };
 
