@@ -18,59 +18,59 @@ string srcdir(JSON_TEST_SRC);
 
 static void runtest(string filename, const string& jdata)
 {
-	fprintf(stderr, "test %s\n", filename.c_str());
+        fprintf(stderr, "test %s\n", filename.c_str());
 
-	string prefix = filename.substr(0, 4);
+        string prefix = filename.substr(0, 4);
 
-	bool wantPass = (prefix == "pass");
-	bool wantFail = (prefix == "fail");
-	assert(wantPass || wantFail);
+        bool wantPass = (prefix == "pass");
+        bool wantFail = (prefix == "fail");
+        assert(wantPass || wantFail);
 
-	bool testResult = true;
-	try {
-	    UniValue val;
-	    val.read(jdata);
-	}
-	catch (std::exception& e) {
-	    string strPrint = string("error: ") + e.what();
-	    fprintf(stderr, "%s\n", strPrint.c_str());
-	    testResult = false;
-	}
-	catch (...) {
-	    string strPrint = string("unknown exception");
-	    fprintf(stderr, "%s\n", strPrint.c_str());
-	    testResult = false;
-	}
+        bool testResult = true;
+        try {
+            UniValue val;
+            val.read(jdata);
+        }
+        catch (std::exception& e) {
+            string strPrint = string("error: ") + e.what();
+            fprintf(stderr, "%s\n", strPrint.c_str());
+            testResult = false;
+        }
+        catch (...) {
+            string strPrint = string("unknown exception");
+            fprintf(stderr, "%s\n", strPrint.c_str());
+            testResult = false;
+        }
 
-	if (wantPass) {
-	    assert(testResult == true);
-	} else {
-	    assert(testResult == false);
-	}
+        if (wantPass) {
+            assert(testResult == true);
+        } else {
+            assert(testResult == false);
+        }
 }
 
 static void runtest_file(const char *filename_)
 {
-	string basename(filename_);
-	string filename = srcdir + "/" + basename;
-	FILE *f = fopen(filename.c_str(), "r");
-	assert(f != NULL);
+        string basename(filename_);
+        string filename = srcdir + "/" + basename;
+        FILE *f = fopen(filename.c_str(), "r");
+        assert(f != NULL);
 
-	string jdata;
+        string jdata;
 
-	char buf[4096];
-	while (!feof(f)) {
-		int bread = fread(buf, 1, sizeof(buf), f);
-		assert(!ferror(f));
+        char buf[4096];
+        while (!feof(f)) {
+                int bread = fread(buf, 1, sizeof(buf), f);
+                assert(!ferror(f));
 
-		string s(buf, bread);
-		jdata += s;
-	}
+                string s(buf, bread);
+                jdata += s;
+        }
 
-	assert(!ferror(f));
-	fclose(f);
+        assert(!ferror(f));
+        fclose(f);
 
-	runtest(basename, jdata);
+        runtest(basename, jdata);
 }
 
 static const char *filenames[] = {
