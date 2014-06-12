@@ -5,18 +5,22 @@
 #include <string>
 #include "univalue.h"
 
+#ifndef JSON_TEST_SRC
+#error JSON_TEST_SRC must point to test source directory
+#endif
+
 #ifndef ARRAY_SIZE
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
 #endif
 
 using namespace std;
+string srcdir(JSON_TEST_SRC);
 
-static void runtest(const char *filename, const string& jdata)
+static void runtest(string filename, const string& jdata)
 {
-	fprintf(stderr, "test %s\n", filename);
+	fprintf(stderr, "test %s\n", filename.c_str());
 
-	string filename_(filename);
-	string prefix = filename_.substr(0, 4);
+	string prefix = filename.substr(0, 4);
 
 	bool wantPass = (prefix == "pass");
 	bool wantFail = (prefix == "fail");
@@ -45,9 +49,11 @@ static void runtest(const char *filename, const string& jdata)
 	}
 }
 
-static void runtest_file(const char *filename)
+static void runtest_file(const char *filename_)
 {
-	FILE *f = fopen(filename, "r");
+	string basename(filename_);
+	string filename = srcdir + "/" + basename;
+	FILE *f = fopen(filename.c_str(), "r");
 	assert(f != NULL);
 
 	string jdata;
@@ -64,7 +70,7 @@ static void runtest_file(const char *filename)
 	assert(!ferror(f));
 	fclose(f);
 
-	runtest(filename, jdata);
+	runtest(basename, jdata);
 }
 
 static const char *filenames[] = {

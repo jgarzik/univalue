@@ -14,6 +14,7 @@ noinst_PROGRAMS = unitester
 
 unitester_SOURCES = unitester.cpp
 unitester_LDADD = libunivalue.a
+unitester_CXXFLAGS = -DJSON_TEST_SRC=\"$(top_srcdir)\"
 
 EXTRA_DIST = \
 	fail10.json \
