@@ -16,5 +16,7 @@ univalue-config.h*
 test-driver
 
 *.o
+*.log
+*.trs
 libunivalue.a
 unitester
