@@ -13,6 +13,7 @@ void UniValue::read(const char *raw)
     clear();
 
     bool expectName = false;
+    bool expectColon = false;
     vector<UniValue*> stack;
 
     while (*raw) {
@@ -42,7 +43,7 @@ void UniValue::read(const char *raw)
 
         case '}':
         case ']': {
-            if (!stack.size())
+            if (!stack.size() || expectColon)
                 throw runtime_error("json parse: unexpected }]");
 
             VType utyp = (*raw == '}' ? VOBJ : VARR);
@@ -58,19 +59,21 @@ void UniValue::read(const char *raw)
             }
 
         case ':': {
-            if (!stack.size() || expectName)
+            if (!stack.size() || expectName || !expectColon)
                 throw runtime_error("json parse: : stack empty or want name");
 
             UniValue *top = stack.back();
             if (top->getType() != VOBJ)
                 throw runtime_error("json parse: : parent not object");
 
+	    expectColon = false;
+
             raw++;
             break;
             }
 
         case ',': {
-            if (!stack.size() || expectName)
+            if (!stack.size() || expectName || expectColon)
                 throw runtime_error("json parse: , stack empty or want name");
 
             UniValue *top = stack.back();
@@ -84,7 +87,7 @@ void UniValue::read(const char *raw)
         case 'n':
         case 't':
         case 'f': {
-            if (!stack.size() || expectName)
+            if (!stack.size() || expectName || expectColon)
                 throw runtime_error("json parse: ntf stack empty or want name");
 
             VType utyp;
@@ -118,13 +121,20 @@ void UniValue::read(const char *raw)
         case '7':
         case '8':
         case '9': {
-            if (!stack.size() || expectName)
+            if (!stack.size() || expectName || expectColon)
                 throw runtime_error("json parse digits: stack empty or want name");
 
             // part 1: int
             string numStr;
 
             const char *first = raw;
+
+	    const char *firstDigit = first;
+	    if (!isdigit(*firstDigit))
+	        firstDigit++;
+            if (*firstDigit == '0')
+                throw runtime_error("json parse digits 1.5: first digit bad");
+
             numStr += *raw;                       // copy first char
             raw++;
 
@@ -226,6 +236,7 @@ void UniValue::read(const char *raw)
             if (expectName) {
                 top->keys.push_back(valStr);
                 expectName = false;
+		expectColon = true;
             } else {
                 UniValue tmpVal(VSTR, valStr);
                 top->values.push_back(tmpVal);
@@ -241,6 +252,9 @@ void UniValue::read(const char *raw)
         case '\n':
             raw++;                                // skip whitespace
             break;
+
+	default:
+            throw runtime_error("json parse string: illegal expression");
         }
     }
 

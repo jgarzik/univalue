@@ -63,6 +63,9 @@ public:
                       unsigned int indentLevel = 0);
 
     void read(const char *raw);
+    void read(std::string rawStr) {
+        read(rawStr.c_str());
+    }
 
 private:
     UniValue::VType typ;

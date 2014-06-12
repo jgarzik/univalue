@@ -13,6 +13,8 @@ install-sh
 missing
 stamp-h1
 univalue-config.h*
+test-driver
 
 *.o
 libunivalue.a
+unitester
