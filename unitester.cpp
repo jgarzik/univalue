@@ -111,5 +111,7 @@ int main (int argc, char *argv[])
     for (unsigned int fidx = 0; fidx < ARRAY_SIZE(filenames); fidx++) {
         runtest_file(filenames[fidx]);
     }
+
+    return 0;
 }
 
