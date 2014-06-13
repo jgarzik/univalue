@@ -2,8 +2,6 @@
 #include <string.h>
 #include <vector>
 #include <stdio.h>
-#include <cassert>
-#include <stdexcept>
 #include "univalue.h"
 
 using namespace std;
@@ -254,7 +252,7 @@ enum tokentype getJsonToken(string& tokenVal, unsigned int& consumed,
     }
 }
 
-void UniValue::read(const char *raw)
+bool UniValue::read(const char *raw)
 {
     clear();
 
@@ -302,12 +300,12 @@ void UniValue::read(const char *raw)
         case TOK_OBJ_CLOSE:
         case TOK_ARR_CLOSE: {
             if (!stack.size() || expectColon || (last_tok == TOK_COMMA))
-                throw runtime_error("json parse: unexpected }]");
+                return false;
 
             VType utyp = (tok == TOK_OBJ_CLOSE ? VOBJ : VARR);
             UniValue *top = stack.back();
             if (utyp != top->getType())
-                throw runtime_error("json parse: mismatched }]");
+                return false;
 
             stack.pop_back();
             expectName = false;
@@ -316,11 +314,11 @@ void UniValue::read(const char *raw)
 
         case TOK_COLON: {
             if (!stack.size() || expectName || !expectColon)
-                throw runtime_error("json parse: : stack empty or want name");
+                return false;
 
             UniValue *top = stack.back();
             if (top->getType() != VOBJ)
-                throw runtime_error("json parse: : parent not object");
+                return false;
 
             expectColon = false;
             break;
@@ -329,7 +327,7 @@ void UniValue::read(const char *raw)
         case TOK_COMMA: {
             if (!stack.size() || expectName || expectColon ||
                 (last_tok == TOK_COMMA) || (last_tok == TOK_ARR_OPEN))
-                throw runtime_error("json parse: , stack empty or want name");
+                return false;
 
             UniValue *top = stack.back();
             if (top->getType() == VOBJ)
@@ -341,14 +339,14 @@ void UniValue::read(const char *raw)
         case TOK_KW_TRUE:
         case TOK_KW_FALSE: {
             if (!stack.size() || expectName || expectColon)
-                throw runtime_error("json parse: ntf stack empty or want name");
+                return false;
 
             VType utyp;
             switch (tok) {
             case TOK_KW_NULL:  utyp = VNULL; break;
             case TOK_KW_TRUE:  utyp = VTRUE; break;
             case TOK_KW_FALSE: utyp = VFALSE; break;
-            default: assert(0); break;
+            default: /* impossible */ break;
             }
 
             UniValue tmpVal(utyp);
@@ -360,7 +358,7 @@ void UniValue::read(const char *raw)
 
         case TOK_NUMBER: {
             if (!stack.size() || expectName || expectColon)
-                throw runtime_error("json parse digits: stack empty or want name");
+                return false;
 
             UniValue tmpVal(VNUM, tokenVal);
             UniValue *top = stack.back();
@@ -371,7 +369,7 @@ void UniValue::read(const char *raw)
 
         case TOK_STRING: {
             if (!stack.size())
-                throw runtime_error("json parse string: stack empty");
+                return false;
 
             UniValue *top = stack.back();
 
@@ -388,14 +386,13 @@ void UniValue::read(const char *raw)
             }
 
         default:
-            throw runtime_error("json parse string: illegal expression");
+            return false;
         }
     }
 
-    if (stack.size() != 0) {
-        char msg[64];
-        sprintf(msg, "json parse: too many toplevel obj, %lu", stack.size());
-        throw runtime_error(msg);
-    }
+    if (stack.size() != 0)
+        return false;
+
+    return true;
 }
 

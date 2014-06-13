@@ -62,9 +62,9 @@ public:
     std::string write(unsigned int prettyIndent = 0,
                       unsigned int indentLevel = 0);
 
-    void read(const char *raw);
-    void read(std::string rawStr) {
-        read(rawStr.c_str());
+    bool read(const char *raw);
+    bool read(std::string rawStr) {
+        return read(rawStr.c_str());
     }
 
 private:

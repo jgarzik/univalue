@@ -26,21 +26,8 @@ static void runtest(string filename, const string& jdata)
         bool wantFail = (prefix == "fail");
         assert(wantPass || wantFail);
 
-        bool testResult = true;
-        try {
-            UniValue val;
-            val.read(jdata);
-        }
-        catch (std::exception& e) {
-            string strPrint = string("error: ") + e.what();
-            fprintf(stderr, "%s\n", strPrint.c_str());
-            testResult = false;
-        }
-        catch (...) {
-            string strPrint = string("unknown exception");
-            fprintf(stderr, "%s\n", strPrint.c_str());
-            testResult = false;
-        }
+        UniValue val;
+        bool testResult = val.read(jdata);
 
         if (wantPass) {
             assert(testResult == true);
