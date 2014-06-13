@@ -107,7 +107,7 @@ static const char *filenames[] = {
         "fail7.json",
         "fail8.json",
         "fail9.json",               // extra comma
-        //"pass1.json",             // investigate
+        "pass1.json",
         "pass2.json",
         "pass3.json",
 };

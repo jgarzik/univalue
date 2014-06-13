@@ -24,6 +24,33 @@ enum tokentype {
     TOK_STRING,
 };
 
+// convert hexadecimal string to unsigned integer
+static const char *hatoui(const char *first, const char *last,
+                          unsigned int& out)
+{
+    unsigned int result = 0;
+    for (; first != last; ++first)
+    {
+        int digit;
+        if (isdigit(*first))
+            digit = *first - '0';
+
+        else if (*first >= 'a' && *first <= 'f')
+            digit = *first - 'a' + 10;
+
+        else if (*first >= 'A' && *first <= 'F')
+            digit = *first - 'A' + 10;
+
+        else
+            break;
+
+        result = 16 * result + digit;
+    }
+    out = result;
+
+    return first;
+}
+
 enum tokentype getJsonToken(string& tokenVal, unsigned int& consumed,
                             const char *raw)
 {
@@ -174,10 +201,30 @@ enum tokentype getJsonToken(string& tokenVal, unsigned int& consumed,
                 case 'n':  valStr += "\n"; break;
                 case 'r':  valStr += "\r"; break;
                 case 't':  valStr += "\t"; break;
-                case 'u':
-                    // TODO: not supported yet
-                    assert(0);
+
+                case 'u': {
+                    char buf[4] = {0,0,0,0};
+                    char *last = &buf[0];
+                    unsigned int codepoint;
+                    if (hatoui(raw + 1, raw + 1 + 4, codepoint) !=
+                               raw + 1 + 4)
+                        return TOK_ERR;
+
+                    if (codepoint <= 0x7f)
+                         *last = (char)codepoint;
+                    else if (codepoint <= 0x7FF) {
+                        *last++ = (char)(0xC0 | (codepoint >> 6));
+                        *last = (char)(0x80 | (codepoint & 0x3F));
+                    } else if (codepoint <= 0xFFFF) {
+                        *last++ = (char)(0xE0 | (codepoint >> 12));
+                        *last++ = (char)(0x80 | ((codepoint >> 6) & 0x3F));
+                        *last = (char)(0x80 | (codepoint & 0x3F));
+                    }
+
+                    valStr += buf;
+                    raw += 4;
                     break;
+                    }
                 default:
                     return TOK_ERR;
 
