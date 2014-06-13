@@ -216,7 +216,10 @@ void UniValue::read(const char *raw)
     vector<UniValue*> stack;
 
     enum tokentype tok = TOK_NONE;
+    enum tokentype last_tok = TOK_NONE;
     while (1) {
+        last_tok = tok;
+
         string tokenVal;
         unsigned int consumed;
         tok = getJsonToken(tokenVal, consumed, raw);
@@ -230,7 +233,10 @@ void UniValue::read(const char *raw)
         case TOK_ARR_OPEN: {
             VType utyp = (tok == TOK_OBJ_OPEN ? VOBJ : VARR);
             if (!stack.size()) {
-                setObject();
+                if (utyp == VOBJ)
+                    setObject();
+                else
+                    setArray();
                 stack.push_back(this);
             } else {
                 UniValue tmpVal(utyp);
@@ -248,7 +254,7 @@ void UniValue::read(const char *raw)
 
         case TOK_OBJ_CLOSE:
         case TOK_ARR_CLOSE: {
-            if (!stack.size() || expectColon)
+            if (!stack.size() || expectColon || (last_tok == TOK_COMMA))
                 throw runtime_error("json parse: unexpected }]");
 
             VType utyp = (tok == TOK_OBJ_CLOSE ? VOBJ : VARR);
@@ -274,7 +280,8 @@ void UniValue::read(const char *raw)
             }
 
         case TOK_COMMA: {
-            if (!stack.size() || expectName || expectColon)
+            if (!stack.size() || expectName || expectColon ||
+                (last_tok == TOK_COMMA) || (last_tok == TOK_ARR_OPEN))
                 throw runtime_error("json parse: , stack empty or want name");
 
             UniValue *top = stack.back();
