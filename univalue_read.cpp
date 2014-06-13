@@ -103,7 +103,7 @@ enum tokentype getJsonToken(string& tokenVal, unsigned int& consumed,
         const char *firstDigit = first;
         if (!isdigit(*firstDigit))
             firstDigit++;
-        if (*firstDigit == '0')
+        if ((*firstDigit == '0') && isdigit(firstDigit[1]))
             return TOK_ERR;
 
         numStr += *raw;                       // copy first char
