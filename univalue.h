@@ -1,5 +1,5 @@
-#ifndef __BITCOIN_UNIVALUE_H__
-#define __BITCOIN_UNIVALUE_H__
+#ifndef __UNIVALUE_H__
+#define __UNIVALUE_H__
 
 #include <stdint.h>
 #include <string>
@@ -79,4 +79,4 @@ private:
     void writeObject(unsigned int prettyIndent, unsigned int indentLevel, std::string& s);
 };
 
-#endif // __BITCOIN_UNIVALUE_H__
+#endif // __UNIVALUE_H__
