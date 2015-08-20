@@ -1,12 +1,13 @@
 
-include_HEADERS = univalue.h
+include_HEADERS = univalue.h univalue_escapes.h
 
 lib_LIBRARIES = libunivalue.a
 
 libunivalue_a_SOURCES = \
 	univalue.cpp \
 	univalue_read.cpp \
-	univalue_write.cpp
+	univalue_write.cpp \
+	numberparse.cpp
 
 TESTS = unitester
 
