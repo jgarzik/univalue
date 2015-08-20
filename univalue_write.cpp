@@ -1,37 +1,20 @@
 // Copyright 2014 BitPay Inc.
-// Distributed under the MIT/X11 software license, see the accompanying
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <ctype.h>
+#include <iomanip>
+#include <sstream>
 #include <stdio.h>
 #include "univalue.h"
+#include "univalue_escapes.h"
 
 // TODO: Using UTF8
 
 using namespace std;
 
-static bool initEscapes;
-static const char *escapes[256];
-
-static void initJsonEscape()
-{
-    escapes['"'] = "\\\"";
-    escapes['\\'] = "\\\\";
-    escapes['/'] = "\\/";
-    escapes['\b'] = "\\b";
-    escapes['\f'] = "\\f";
-    escapes['\n'] = "\\n";
-    escapes['\r'] = "\\r";
-    escapes['\t'] = "\\t";
-
-    initEscapes = true;
-}
-
 static string json_escape(const string& inS)
 {
-    if (!initEscapes)
-        initJsonEscape();
-
     string outS;
     outS.reserve(inS.size() * 2);
 
@@ -56,7 +39,7 @@ static string json_escape(const string& inS)
 }
 
 string UniValue::write(unsigned int prettyIndent,
-                       unsigned int indentLevel)
+                       unsigned int indentLevel) const
 {
     string s;
     s.reserve(1024);
@@ -81,29 +64,20 @@ string UniValue::write(unsigned int prettyIndent,
     case VNUM:
         s += val;
         break;
-    case VTRUE:
-        s += "true";
-        break;
-    case VFALSE:
-        s += "false";
+    case VBOOL:
+        s += (val == "1" ? "true" : "false");
         break;
     }
 
     return s;
 }
 
-static string spaceStr;
-
-static string indentStr(unsigned int prettyIndent, unsigned int indentLevel)
+static void indentStr(unsigned int prettyIndent, unsigned int indentLevel, string& s)
 {
-    unsigned int spaces = prettyIndent * indentLevel;
-    while (spaceStr.size() < spaces)
-        spaceStr += "                ";
-
-    return spaceStr.substr(0, spaces);
+    s.append(prettyIndent * indentLevel, ' ');
 }
 
-void UniValue::writeArray(unsigned int prettyIndent, unsigned int indentLevel, string& s)
+void UniValue::writeArray(unsigned int prettyIndent, unsigned int indentLevel, string& s) const
 {
     s += "[";
     if (prettyIndent)
@@ -111,20 +85,23 @@ void UniValue::writeArray(unsigned int prettyIndent, unsigned int indentLevel, s
 
     for (unsigned int i = 0; i < values.size(); i++) {
         if (prettyIndent)
-            s += indentStr(prettyIndent, indentLevel);
+            indentStr(prettyIndent, indentLevel, s);
         s += values[i].write(prettyIndent, indentLevel + 1);
-        if (i != (values.size() - 1))
-            s += ", ";
+        if (i != (values.size() - 1)) {
+            s += ",";
+            if (prettyIndent)
+                s += " ";
+        }
         if (prettyIndent)
             s += "\n";
     }
 
     if (prettyIndent)
-        s += indentStr(prettyIndent, indentLevel - 1);
+        indentStr(prettyIndent, indentLevel - 1, s);
     s += "]";
 }
 
-void UniValue::writeObject(unsigned int prettyIndent, unsigned int indentLevel, string& s)
+void UniValue::writeObject(unsigned int prettyIndent, unsigned int indentLevel, string& s) const
 {
     s += "{";
     if (prettyIndent)
@@ -132,8 +109,10 @@ void UniValue::writeObject(unsigned int prettyIndent, unsigned int indentLevel, 
 
     for (unsigned int i = 0; i < keys.size(); i++) {
         if (prettyIndent)
-            s += indentStr(prettyIndent, indentLevel);
-        s += "\"" + json_escape(keys[i]) + "\": ";
+            indentStr(prettyIndent, indentLevel, s);
+        s += "\"" + json_escape(keys[i]) + "\":";
+        if (prettyIndent)
+            s += " ";
         s += values[i].write(prettyIndent, indentLevel + 1);
         if (i != (values.size() - 1))
             s += ",";
@@ -142,7 +121,7 @@ void UniValue::writeObject(unsigned int prettyIndent, unsigned int indentLevel, 
     }
 
     if (prettyIndent)
-        s += indentStr(prettyIndent, indentLevel - 1);
+        indentStr(prettyIndent, indentLevel - 1, s);
     s += "}";
 }
 
