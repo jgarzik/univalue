@@ -6,8 +6,14 @@ lib_LIBRARIES = libunivalue.a
 libunivalue_a_SOURCES = \
 	univalue.cpp \
 	univalue_read.cpp \
-	univalue_write.cpp \
-	numberparse.cpp
+	univalue_write.cpp
+
+# ----------------------------------
+# optional add numberparse functions
+# ----------------------------------
+if USE_NUMFUNC
+libunivalue_a_SOURCES += numberparse.cpp
+endif
 
 TESTS = unitester
 
@@ -54,4 +60,3 @@ EXTRA_DIST = \
 	pass1.json \
 	pass2.json \
 	pass3.json
-

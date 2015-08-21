@@ -11,13 +11,9 @@
 
 #include "univalue.h"
 
-#ifdef EXTERNAL_NUM_PARSE
 extern bool ParseInt32(const std::string& str, int32_t *out);
 extern bool ParseInt64(const std::string& str, int64_t *out);
 extern bool ParseDouble(const std::string& str, double *out);
-#else
-#include "numberparse.h"
-#endif
 
 using namespace std;
 
