@@ -21,7 +21,7 @@ AC_PATH_TOOL(RANLIB, ranlib)
 AC_PATH_TOOL(STRIP, strip)
 PKG_PROG_PKG_CONFIG
 
-# Enable wallet
+# Enable numfunc
 AC_ARG_WITH([numfunc],
   [AS_HELP_STRING([--with-numfunc],
   [enable compiling of number parsing functions (default is yes)])],
