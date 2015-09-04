@@ -50,6 +50,7 @@ EXTRA_DIST = \
 	fail31.json \
 	fail32.json \
 	fail33.json \
+	fail34.json \
 	fail3.json \
 	fail4.json \
 	fail5.json \
