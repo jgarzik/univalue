@@ -3,5 +3,5 @@
 
 A universal value object, with JSON encoding (output) and decoding (input).
 
-Built as a single dynamic RIAA C++ object class, and no templates.
+Built as a single dynamic RAII C++ object class, and no templates.
 
