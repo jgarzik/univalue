@@ -2,7 +2,9 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include <limits>
 #include <errno.h>
+#include <string.h>
 #include <stdlib.h>
 #include <locale>
 #include <sstream>
@@ -62,3 +64,4 @@ bool ParseDouble(const std::string& str, double *out)
     if(out) *out = result;
     return text.eof() && !text.fail();
 }
+
