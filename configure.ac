@@ -2,7 +2,7 @@ AC_INIT([univalue], [0.0.1],
         [http://github.com/jgarzik/univalue/])
 
 AC_PREREQ(2.52)
-AC_CONFIG_SRCDIR([univalue.cpp])
+AC_CONFIG_SRCDIR([lib/univalue.cpp])
 AM_INIT_AUTOMAKE([gnu])
 AC_CONFIG_HEADERS([univalue-config.h])
 
@@ -31,6 +31,6 @@ AM_CONDITIONAL([USE_NUMFUNC], [test x$use_numfunc = xyes])
 
 AC_LANG_PUSH([C++])
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([lib/Makefile test/Makefile Makefile])
 AC_OUTPUT
 
