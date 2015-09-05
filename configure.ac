@@ -1,4 +1,4 @@
-AC_INIT([univalue], [0.0.1],
+AC_INIT([univalue], [0.0.2],
         [http://github.com/jgarzik/univalue/])
 
 AC_PREREQ(2.52)
