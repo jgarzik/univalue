@@ -4,7 +4,7 @@ TESTS = unitester
 noinst_PROGRAMS = unitester
 
 unitester_SOURCES = unitester.cpp
-unitester_LDADD = ../lib/libunivalue.a
+unitester_LDADD = ../lib/libunivalue.la
 unitester_CXXFLAGS = -I$(top_srcdir)/lib -DJSON_TEST_SRC=\"$(top_srcdir)/test\"
 
 EXTRA_DIST = \
