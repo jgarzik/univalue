@@ -21,14 +21,6 @@ AC_PATH_TOOL(RANLIB, ranlib)
 AC_PATH_TOOL(STRIP, strip)
 PKG_PROG_PKG_CONFIG
 
-# Enable numfunc
-AC_ARG_WITH([numfunc],
-  [AS_HELP_STRING([--with-numfunc],
-  [enable compiling of number parsing functions (default is yes)])],
-  [use_numfunc=$withval],
-  [use_numfunc=yes])
-AM_CONDITIONAL([USE_NUMFUNC], [test x$use_numfunc = xyes])
-
 AC_LANG_PUSH([C++])
 
 AC_CONFIG_FILES([lib/Makefile test/Makefile Makefile])
