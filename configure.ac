@@ -23,6 +23,11 @@ PKG_PROG_PKG_CONFIG
 
 AC_LANG_PUSH([C++])
 
+AC_ARG_WITH([pic],
+  [AS_HELP_STRING([--with-pic],
+  [enable fPIC support])],
+  [CXXFLAGS+=" -fPIC"; export CXXFLAGS])
+
 AC_CONFIG_FILES([lib/Makefile test/Makefile Makefile])
 AC_OUTPUT
 
