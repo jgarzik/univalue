@@ -55,6 +55,11 @@ PKG_PROG_PKG_CONFIG
 
 AC_LANG_PUSH([C++])
 
-AC_CONFIG_FILES([lib/Makefile test/Makefile Makefile])
+AC_CONFIG_FILES([
+    lib/Makefile
+    test/Makefile
+    Makefile
+    lib/libunivalue.pc
+    lib/libunivalue-uninstalled.pc])
 AC_OUTPUT
 
