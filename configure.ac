@@ -14,10 +14,10 @@ m4_define([libunivalue_age], [m4_eval(libunivalue_binary_age - libunivalue_inter
 m4_define([libunivalue_version], [libunivalue_major_version().libunivalue_minor_version().libunivalue_micro_version()libunivalue_extraversion()])
 
 
-AC_INIT([univalue], [0.0.2],
+AC_INIT([univalue], [1.0.0],
         [http://github.com/jgarzik/univalue/])
 
-AC_PREREQ(2.52)
+AC_PREREQ(2.60)
 AC_CONFIG_SRCDIR([lib/univalue.cpp])
 AM_INIT_AUTOMAKE([gnu])
 AC_CONFIG_HEADERS([univalue-config.h])
