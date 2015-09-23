@@ -4,3 +4,4 @@ unitester
 *.log
 *.trs
 
+.libs

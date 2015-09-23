@@ -7,6 +7,8 @@ autom4te.cache/
 compile
 config.log
 config.status
+config.guess
+config.sub
 configure
 depcomp
 install-sh
@@ -14,5 +16,7 @@ missing
 stamp-h1
 univalue-config.h*
 test-driver
+libtool
+ltmain.sh
 
 *.o
