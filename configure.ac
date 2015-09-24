@@ -19,8 +19,10 @@ AC_INIT([univalue], [1.0.0],
 
 AC_PREREQ(2.60)
 AC_CONFIG_SRCDIR([lib/univalue.cpp])
-AM_INIT_AUTOMAKE([gnu])
+AC_CONFIG_AUX_DIR([build-aux])
+AC_CONFIG_MACRO_DIR([build-aux/m4])
 AC_CONFIG_HEADERS([univalue-config.h])
+AM_INIT_AUTOMAKE([gnu])
 
 LIBUNIVALUE_MAJOR_VERSION=libunivalue_major_version
 LIBUNIVALUE_MINOR_VERSION=libunivalue_minor_version
