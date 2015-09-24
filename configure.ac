@@ -46,7 +46,6 @@ LT_INIT
 LT_LANG([C++])
 
 AC_CONFIG_FILES([
-    test/Makefile
     Makefile
     lib/libunivalue.pc
     lib/libunivalue-uninstalled.pc])
