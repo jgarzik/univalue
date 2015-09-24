@@ -17,6 +17,9 @@ m4_define([libunivalue_version], [libunivalue_major_version().libunivalue_minor_
 AC_INIT([univalue], [1.0.0],
         [http://github.com/jgarzik/univalue/])
 
+dnl make the compilation flags quiet unless V=1 is used
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+
 AC_PREREQ(2.60)
 AC_CONFIG_SRCDIR([lib/univalue.cpp])
 AC_CONFIG_AUX_DIR([build-aux])
