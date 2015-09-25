@@ -51,11 +51,19 @@ case $host in
   ;;
 esac
 
+BUILD_EXEEXT=
+case $build in
+  *mingw*)
+    BUILD_EXEEXT=".exe"
+  ;;
+esac
+
 AC_CONFIG_FILES([
     Makefile
     lib/libunivalue.pc
     lib/libunivalue-uninstalled.pc])
 
 AC_SUBST(LIBTOOL_APP_LDFLAGS)
+AC_SUBST(BUILD_EXEEXT)
 AC_OUTPUT
 

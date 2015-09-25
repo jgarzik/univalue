@@ -1,4 +1,6 @@
 ACLOCAL_AMFLAGS = -I build-aux/m4
+.PHONY: gen
+.INTERMEDIATE: $(GENBIN)
 
 include_HEADERS = include/univalue.h
 noinst_HEADERS = lib/univalue_escapes.h
@@ -17,9 +19,18 @@ lib_libunivalue_la_CXXFLAGS = -I$(top_srcdir)/include
 
 TESTS = test/unitester
 
-noinst_PROGRAMS = lib/gen $(TESTS)
+GENBIN = gen/gen$(BUILD_EXEEXT)
+GEN_SRCS = gen/gen.cpp
 
-lib_gen_SOURCES = lib/gen.cpp
+$(GENBIN): $(GEN_SRCS)
+	@echo Building $@
+	$(AM_V_at)c++ -I$(top_srcdir)/include -o $@ $<
+
+gen: lib/univalue_escapes.h $(GENBIN)
+	@echo Updating $<
+	$(AM_V_at)$(GENBIN) > lib/univalue_escapes.h
+
+noinst_PROGRAMS = $(TESTS)
 
 TEST_DATA_DIR=test
 
@@ -67,4 +78,4 @@ TEST_FILES = \
 	$(TEST_DATA_DIR)/pass2.json \
 	$(TEST_DATA_DIR)/pass3.json
 
-EXTRA_DIST=$(TEST_FILES)
+EXTRA_DIST=$(TEST_FILES) $(GEN_SRCS)
