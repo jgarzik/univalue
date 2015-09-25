@@ -55,6 +55,12 @@ PKG_PROG_PKG_CONFIG
 
 AC_LANG_PUSH([C++])
 
+case $host in
+  *mingw*)
+     LDFLAGS+=" -static-libgcc -static-libstdc++"
+     ;;
+esac
+
 AC_CONFIG_FILES([
     lib/Makefile
     test/Makefile
