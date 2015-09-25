@@ -17,10 +17,15 @@ m4_define([libunivalue_version], [libunivalue_major_version().libunivalue_minor_
 AC_INIT([univalue], [1.0.0],
         [http://github.com/jgarzik/univalue/])
 
+dnl make the compilation flags quiet unless V=1 is used
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+
 AC_PREREQ(2.60)
 AC_CONFIG_SRCDIR([lib/univalue.cpp])
-AM_INIT_AUTOMAKE([gnu])
+AC_CONFIG_AUX_DIR([build-aux])
+AC_CONFIG_MACRO_DIR([build-aux/m4])
 AC_CONFIG_HEADERS([univalue-config.h])
+AM_INIT_AUTOMAKE([subdir-objects foreign])
 
 LIBUNIVALUE_MAJOR_VERSION=libunivalue_major_version
 LIBUNIVALUE_MINOR_VERSION=libunivalue_minor_version
@@ -38,22 +43,7 @@ AC_SUBST(LIBUNIVALUE_REVISION)
 AC_SUBST(LIBUNIVALUE_AGE)
 
 LT_INIT
-
-AC_PROG_CXX
-AC_PROG_CC
-AC_PROG_CPP
-AC_PROG_CXXCPP
-AC_PROG_INSTALL
-AC_PROG_OBJC
-AC_PROG_LN_S
-AC_PROG_MKDIR_P
-AC_PROG_SED
-AC_PATH_TOOL(AR, ar)
-AC_PATH_TOOL(RANLIB, ranlib)
-AC_PATH_TOOL(STRIP, strip)
-PKG_PROG_PKG_CONFIG
-
-AC_LANG_PUSH([C++])
+LT_LANG([C++])
 
 case $host in
   *mingw*)
@@ -62,8 +52,6 @@ case $host in
 esac
 
 AC_CONFIG_FILES([
-    lib/Makefile
-    test/Makefile
     Makefile
     lib/libunivalue.pc
     lib/libunivalue-uninstalled.pc])
