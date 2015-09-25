@@ -47,13 +47,15 @@ LT_LANG([C++])
 
 case $host in
   *mingw*)
-     LDFLAGS+=" -static-libgcc -static-libstdc++"
-     ;;
+    LIBTOOL_APP_LDFLAGS="$LIBTOOL_APP_LDFLAGS -all-static"
+  ;;
 esac
 
 AC_CONFIG_FILES([
     Makefile
     lib/libunivalue.pc
     lib/libunivalue-uninstalled.pc])
+
+AC_SUBST(LIBTOOL_APP_LDFLAGS)
 AC_OUTPUT
 
