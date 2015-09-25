@@ -7,6 +7,9 @@ noinst_HEADERS = lib/univalue_escapes.h
 
 lib_LTLIBRARIES = lib/libunivalue.la
 
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = pc/libunivalue.pc
+
 lib_libunivalue_la_SOURCES = \
 	lib/univalue.cpp \
 	lib/univalue_read.cpp \

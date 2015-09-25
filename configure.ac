@@ -60,8 +60,8 @@ esac
 
 AC_CONFIG_FILES([
     Makefile
-    lib/libunivalue.pc
-    lib/libunivalue-uninstalled.pc])
+    pc/libunivalue.pc
+    pc/libunivalue-uninstalled.pc])
 
 AC_SUBST(LIBTOOL_APP_LDFLAGS)
 AC_SUBST(BUILD_EXEEXT)
