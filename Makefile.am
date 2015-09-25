@@ -1,6 +1,7 @@
 ACLOCAL_AMFLAGS = -I build-aux/m4
 
-include_HEADERS = lib/univalue.h lib/univalue_escapes.h
+include_HEADERS = include/univalue.h
+noinst_HEADERS = lib/univalue_escapes.h
 
 lib_LTLIBRARIES = lib/libunivalue.la
 
@@ -12,6 +13,7 @@ lib_libunivalue_la_SOURCES = \
 lib_libunivalue_la_LDFLAGS = \
 	-version-info $(LIBUNIVALUE_CURRENT):$(LIBUNIVALUE_REVISION):$(LIBUNIVALUE_AGE) \
 	-no-undefined
+lib_libunivalue_la_CXXFLAGS = -I$(top_srcdir)/include
 
 TESTS = test/unitester
 
@@ -23,7 +25,7 @@ TEST_DATA_DIR=test
 
 test_unitester_SOURCES = test/unitester.cpp
 test_unitester_LDADD = lib/libunivalue.la
-test_unitester_CXXFLAGS = -I$(top_srcdir)/lib -DJSON_TEST_SRC=\"$(srcdir)/$(TEST_DATA_DIR)\"
+test_unitester_CXXFLAGS = -I$(top_srcdir)/include -DJSON_TEST_SRC=\"$(srcdir)/$(TEST_DATA_DIR)\"
 
 TEST_FILES = \
 	$(TEST_DATA_DIR)/fail10.json \
