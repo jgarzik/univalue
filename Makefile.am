@@ -1,8 +1,14 @@
 ACLOCAL_AMFLAGS = -I build-aux/m4
+.PHONY: gen
+.INTERMEDIATE: $(GENBIN)
 
-include_HEADERS = lib/univalue.h lib/univalue_escapes.h
+include_HEADERS = include/univalue.h
+noinst_HEADERS = lib/univalue_escapes.h
 
 lib_LTLIBRARIES = lib/libunivalue.la
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = pc/libunivalue.pc
 
 lib_libunivalue_la_SOURCES = \
 	lib/univalue.cpp \
@@ -12,18 +18,29 @@ lib_libunivalue_la_SOURCES = \
 lib_libunivalue_la_LDFLAGS = \
 	-version-info $(LIBUNIVALUE_CURRENT):$(LIBUNIVALUE_REVISION):$(LIBUNIVALUE_AGE) \
 	-no-undefined
+lib_libunivalue_la_CXXFLAGS = -I$(top_srcdir)/include
 
 TESTS = test/unitester
 
-noinst_PROGRAMS = lib/gen $(TESTS)
+GENBIN = gen/gen$(BUILD_EXEEXT)
+GEN_SRCS = gen/gen.cpp
 
-lib_gen_SOURCES = lib/gen.cpp
+$(GENBIN): $(GEN_SRCS)
+	@echo Building $@
+	$(AM_V_at)c++ -I$(top_srcdir)/include -o $@ $<
+
+gen: lib/univalue_escapes.h $(GENBIN)
+	@echo Updating $<
+	$(AM_V_at)$(GENBIN) > lib/univalue_escapes.h
+
+noinst_PROGRAMS = $(TESTS)
 
 TEST_DATA_DIR=test
 
 test_unitester_SOURCES = test/unitester.cpp
 test_unitester_LDADD = lib/libunivalue.la
-test_unitester_CXXFLAGS = -I$(top_srcdir)/lib -DJSON_TEST_SRC=\"$(srcdir)/$(TEST_DATA_DIR)\"
+test_unitester_CXXFLAGS = -I$(top_srcdir)/include -DJSON_TEST_SRC=\"$(srcdir)/$(TEST_DATA_DIR)\"
+test_unitester_LDFLAGS = -static $(LIBTOOL_APP_LDFLAGS)
 
 TEST_FILES = \
 	$(TEST_DATA_DIR)/fail10.json \
@@ -64,4 +81,4 @@ TEST_FILES = \
 	$(TEST_DATA_DIR)/pass2.json \
 	$(TEST_DATA_DIR)/pass3.json
 
-EXTRA_DIST=$(TEST_FILES)
+EXTRA_DIST=$(TEST_FILES) $(GEN_SRCS)
