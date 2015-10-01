@@ -183,7 +183,7 @@ bool UniValue::push_back(const UniValue& val)
     return true;
 }
 
-bool UniValue::push_backV(const std::vector<UniValue>& vec)
+bool UniValue::pushV(const std::vector<UniValue>& vec)
 {
     if (typ != VARR)
         return false;
@@ -305,21 +305,21 @@ std::vector<UniValue> UniValue::getValues() const
     return values;
 }
 
-bool UniValue::get_bool() const
+bool UniValue::getBool() const
 {
     if (typ != VBOOL)
         throw std::runtime_error("JSON value is not a boolean as expected");
-    return getBool();
+    return isTrue();
 }
 
-std::string UniValue::get_str() const
+std::string UniValue::getStr() const
 {
     if (typ != VSTR)
         throw std::runtime_error("JSON value is not a string as expected");
     return getValStr();
 }
 
-int UniValue::get_int() const
+int UniValue::getInt() const
 {
     if (typ != VNUM)
         throw std::runtime_error("JSON value is not an integer as expected");
@@ -329,7 +329,7 @@ int UniValue::get_int() const
     return retval;
 }
 
-int64_t UniValue::get_int64() const
+int64_t UniValue::getInt64() const
 {
     if (typ != VNUM)
         throw std::runtime_error("JSON value is not an integer as expected");
@@ -339,7 +339,7 @@ int64_t UniValue::get_int64() const
     return retval;
 }
 
-double UniValue::get_real() const
+double UniValue::getReal() const
 {
     if (typ != VNUM)
         throw std::runtime_error("JSON value is not a number as expected");
@@ -349,14 +349,14 @@ double UniValue::get_real() const
     return retval;
 }
 
-const UniValue& UniValue::get_obj() const
+const UniValue& UniValue::getObject() const
 {
     if (typ != VOBJ)
         throw std::runtime_error("JSON value is not an object as expected");
     return *this;
 }
 
-const UniValue& UniValue::get_array() const
+const UniValue& UniValue::getArray() const
 {
     if (typ != VARR)
         throw std::runtime_error("JSON value is not an array as expected");
