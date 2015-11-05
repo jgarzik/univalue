@@ -20,14 +20,21 @@
 using namespace std;
 string srcdir(JSON_TEST_SRC);
 
+static std::string rtrim(std::string s)
+{
+    s.erase(s.find_last_not_of(" \n\r\t")+1);
+    return s;
+}
+
 static void runtest(string filename, const string& jdata)
 {
         fprintf(stderr, "test %s\n", filename.c_str());
 
         string prefix = filename.substr(0, 4);
 
-        bool wantPass = (prefix == "pass");
+        bool wantPass = (prefix == "pass") || (prefix == "roun");
         bool wantFail = (prefix == "fail");
+        bool wantRoundTrip = (prefix == "roun");
         assert(wantPass || wantFail);
 
         UniValue val;
@@ -37,6 +44,11 @@ static void runtest(string filename, const string& jdata)
             assert(testResult == true);
         } else {
             assert(testResult == false);
+        }
+
+        if (wantRoundTrip) {
+            std::string odata = val.write(0, 0);
+            assert(odata == rtrim(jdata));
         }
 }
 
@@ -102,6 +114,7 @@ static const char *filenames[] = {
         "pass1.json",
         "pass2.json",
         "pass3.json",
+        "round1.json",              // round-trip test
 };
 
 int main (int argc, char *argv[])

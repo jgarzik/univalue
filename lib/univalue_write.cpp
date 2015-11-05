@@ -25,10 +25,10 @@ static string json_escape(const string& inS)
         if (escStr)
             outS += escStr;
 
-        else if (isprint(ch))
+        else if (ch < 0x80)
             outS += ch;
 
-        else {
+        else { // TODO handle UTF-8 properly
             char tmpesc[16];
             sprintf(tmpesc, "\\u%04x", ch);
             outS += tmpesc;
