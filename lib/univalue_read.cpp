@@ -242,13 +242,15 @@ enum jtokentype getJsonToken(string& tokenVal, unsigned int& consumed,
 }
 
 enum expect_bits {
-    EXP_NAME = (1U << 0),
+    EXP_OBJ_NAME = (1U << 0),
     EXP_COLON = (1U << 1),
+    EXP_VALUE = (1U << 3),
+    EXP_ARR_VALUE = (1U << 2),
 };
 
 #define expect(bit) (expectMask & (EXP_##bit))
-#define setExpect(bit) { expectMask |= EXP_##bit ; }
-#define clearExpect(bit) { expectMask &= ~EXP_##bit ; }
+#define setExpect(bit) (expectMask |= EXP_##bit)
+#define clearExpect(bit) (expectMask &= ~EXP_##bit)
 
 bool UniValue::read(const char *raw)
 {
@@ -268,6 +270,34 @@ bool UniValue::read(const char *raw)
         if (tok == JTOK_NONE || tok == JTOK_ERR)
             return false;
         raw += consumed;
+
+        bool isValue = jsonTokenIsValue(tok);
+
+        if (expect(VALUE)) {
+            if (!isValue)
+                return false;
+            clearExpect(VALUE);
+
+        } else if (expect(ARR_VALUE)) {
+            bool isArrValue = isValue || (tok == JTOK_ARR_CLOSE);
+            if (!isArrValue)
+                return false;
+
+            clearExpect(ARR_VALUE);
+
+        } else if (expect(OBJ_NAME)) {
+            bool isObjName = (tok == JTOK_OBJ_CLOSE || tok == JTOK_STRING);
+            if (!isObjName)
+                return false;
+
+        } else if (expect(COLON)) {
+            if (tok != JTOK_COLON)
+                return false;
+            clearExpect(COLON);
+
+        } else if (!expect(COLON) && (tok == JTOK_COLON)) {
+            return false;
+        }
 
         switch (tok) {
 
@@ -290,13 +320,15 @@ bool UniValue::read(const char *raw)
             }
 
             if (utyp == VOBJ)
-                setExpect(NAME);
+                setExpect(OBJ_NAME);
+            else
+                setExpect(ARR_VALUE);
             break;
             }
 
         case JTOK_OBJ_CLOSE:
         case JTOK_ARR_CLOSE: {
-            if (!stack.size() || expect(COLON) || (last_tok == JTOK_COMMA))
+            if (!stack.size() || (last_tok == JTOK_COMMA))
                 return false;
 
             VType utyp = (tok == JTOK_OBJ_CLOSE ? VOBJ : VARR);
@@ -305,37 +337,39 @@ bool UniValue::read(const char *raw)
                 return false;
 
             stack.pop_back();
-            clearExpect(NAME);
+            clearExpect(OBJ_NAME);
             break;
             }
 
         case JTOK_COLON: {
-            if (!stack.size() || expect(NAME) || !expect(COLON))
+            if (!stack.size())
                 return false;
 
             UniValue *top = stack.back();
             if (top->getType() != VOBJ)
                 return false;
 
-            clearExpect(COLON);
+            setExpect(VALUE);
             break;
             }
 
         case JTOK_COMMA: {
-            if (!stack.size() || expect(NAME) || expect(COLON) ||
+            if (!stack.size() ||
                 (last_tok == JTOK_COMMA) || (last_tok == JTOK_ARR_OPEN))
                 return false;
 
             UniValue *top = stack.back();
             if (top->getType() == VOBJ)
-                setExpect(NAME);
+                setExpect(OBJ_NAME);
+            else
+                setExpect(ARR_VALUE);
             break;
             }
 
         case JTOK_KW_NULL:
         case JTOK_KW_TRUE:
         case JTOK_KW_FALSE: {
-            if (!stack.size() || expect(NAME) || expect(COLON))
+            if (!stack.size())
                 return false;
 
             UniValue tmpVal;
@@ -359,7 +393,7 @@ bool UniValue::read(const char *raw)
             }
 
         case JTOK_NUMBER: {
-            if (!stack.size() || expect(NAME) || expect(COLON))
+            if (!stack.size())
                 return false;
 
             UniValue tmpVal(VNUM, tokenVal);
@@ -375,9 +409,9 @@ bool UniValue::read(const char *raw)
 
             UniValue *top = stack.back();
 
-            if (expect(NAME)) {
+            if (expect(OBJ_NAME)) {
                 top->keys.push_back(tokenVal);
-                clearExpect(NAME);
+                clearExpect(OBJ_NAME);
                 setExpect(COLON);
             } else {
                 UniValue tmpVal(VSTR, tokenVal);
