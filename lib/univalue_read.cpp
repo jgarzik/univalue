@@ -244,8 +244,9 @@ enum jtokentype getJsonToken(string& tokenVal, unsigned int& consumed,
 enum expect_bits {
     EXP_OBJ_NAME = (1U << 0),
     EXP_COLON = (1U << 1),
-    EXP_VALUE = (1U << 3),
     EXP_ARR_VALUE = (1U << 2),
+    EXP_VALUE = (1U << 3),
+    EXP_NOT_VALUE = (1U << 4),
 };
 
 #define expect(bit) (expectMask & (EXP_##bit))
@@ -300,6 +301,12 @@ bool UniValue::read(const char *raw)
             return false;
         }
 
+        if (expect(NOT_VALUE)) {
+            if (isValueOpen)
+                return false;
+            clearExpect(NOT_VALUE);
+        }
+
         switch (tok) {
 
         case JTOK_OBJ_OPEN:
@@ -339,6 +346,7 @@ bool UniValue::read(const char *raw)
 
             stack.pop_back();
             clearExpect(OBJ_NAME);
+            setExpect(NOT_VALUE);
             break;
             }
 
@@ -390,6 +398,7 @@ bool UniValue::read(const char *raw)
             UniValue *top = stack.back();
             top->values.push_back(tmpVal);
 
+            setExpect(NOT_VALUE);
             break;
             }
 
@@ -401,6 +410,7 @@ bool UniValue::read(const char *raw)
             UniValue *top = stack.back();
             top->values.push_back(tmpVal);
 
+            setExpect(NOT_VALUE);
             break;
             }
 
@@ -419,6 +429,7 @@ bool UniValue::read(const char *raw)
                 top->values.push_back(tmpVal);
             }
 
+            setExpect(NOT_VALUE);
             break;
             }
 

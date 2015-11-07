@@ -72,6 +72,7 @@ TEST_FILES = \
 	$(TEST_DATA_DIR)/fail34.json \
 	$(TEST_DATA_DIR)/fail35.json \
 	$(TEST_DATA_DIR)/fail36.json \
+	$(TEST_DATA_DIR)/fail37.json \
 	$(TEST_DATA_DIR)/fail3.json \
 	$(TEST_DATA_DIR)/fail4.json \
 	$(TEST_DATA_DIR)/fail5.json \
