@@ -19,11 +19,12 @@
 
 using namespace std;
 string srcdir(JSON_TEST_SRC);
+static bool test_failed = false;
+
+#define d_assert(expr) { if (!(expr)) { test_failed = true; fprintf(stderr, "%s failed\n", filename.c_str()); } }
 
 static void runtest(string filename, const string& jdata)
 {
-        fprintf(stderr, "test %s\n", filename.c_str());
-
         string prefix = filename.substr(0, 4);
 
         bool wantPass = (prefix == "pass");
@@ -34,9 +35,9 @@ static void runtest(string filename, const string& jdata)
         bool testResult = val.read(jdata);
 
         if (wantPass) {
-            assert(testResult == true);
+            d_assert(testResult == true);
         } else {
-            assert(testResult == false);
+            d_assert(testResult == false);
         }
 }
 
@@ -92,6 +93,7 @@ static const char *filenames[] = {
         "fail32.json",
         "fail33.json",
         "fail34.json",
+        // "fail35.json",		// investigate - issue #15
         "fail3.json",
         "fail4.json",                // extra comma
         "fail5.json",
@@ -110,6 +112,6 @@ int main (int argc, char *argv[])
         runtest_file(filenames[fidx]);
     }
 
-    return 0;
+    return test_failed ? 1 : 0;
 }
 
