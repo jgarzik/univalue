@@ -13,7 +13,6 @@
 #include <map>
 #include <cassert>
 
-#include <sstream>        // .get_int64()
 #include <utility>        // std::pair
 
 class UniValue {
@@ -68,7 +67,6 @@ public:
 
     size_t size() const { return values.size(); }
 
-    bool getBool() const { return isTrue(); }
     bool checkObject(const std::map<std::string,UniValue::VType>& memberTypes);
     const UniValue& operator[](const std::string& key) const;
     const UniValue& operator[](unsigned int index) const;
@@ -92,7 +90,7 @@ public:
         std::string s(val_);
         return push_back(s);
     }
-    bool push_backV(const std::vector<UniValue>& vec);
+    bool pushV(const std::vector<UniValue>& vec);
 
     bool pushKV(const std::string& key, const UniValue& val);
     bool pushKV(const std::string& key, const std::string& val) {
@@ -144,19 +142,19 @@ public:
     // value is of unexpected type
     std::vector<std::string> getKeys() const;
     std::vector<UniValue> getValues() const;
-    bool get_bool() const;
-    std::string get_str() const;
-    int get_int() const;
-    int64_t get_int64() const;
-    double get_real() const;
-    const UniValue& get_obj() const;
-    const UniValue& get_array() const;
+    bool getBool() const;
+    std::string getStr() const;
+    int getInt() const;
+    int64_t getInt64() const;
+    double getReal() const;
+    const UniValue& getObject() const;
+    const UniValue& getArray() const;
 
     enum VType type() const { return getType(); }
     bool push_back(std::pair<std::string,UniValue> pear) {
         return pushKV(pear.first, pear.second);
     }
-    friend const UniValue& find_value( const UniValue& obj, const std::string& name);
+    const UniValue findValue(const std::string& key) const;
 };
 
 //
