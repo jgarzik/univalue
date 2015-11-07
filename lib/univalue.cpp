@@ -4,7 +4,6 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <stdint.h>
-#include <ctype.h>
 #include <errno.h>
 #include <iomanip>
 #include <limits>
@@ -21,7 +20,7 @@ static bool ParsePrechecks(const std::string& str)
 {
     if (str.empty()) // No empty string allowed
         return false;
-    if (str.size() >= 1 && (isspace(str[0]) || isspace(str[str.size()-1]))) // No padding allowed
+    if (str.size() >= 1 && (json_isspace(str[0]) || json_isspace(str[str.size()-1]))) // No padding allowed
         return false;
     if (str.size() != strlen(str.c_str())) // No embedded NUL characters allowed
         return false;

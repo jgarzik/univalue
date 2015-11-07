@@ -9,6 +9,11 @@
 
 using namespace std;
 
+static bool json_isdigit(int ch)
+{
+	return ((ch >= '0') && (ch <= '9'));
+}
+
 // convert hexadecimal string to unsigned integer
 static const char *hatoui(const char *first, const char *last,
                           unsigned int& out)
@@ -17,7 +22,7 @@ static const char *hatoui(const char *first, const char *last,
     for (; first != last; ++first)
     {
         int digit;
-        if (isdigit(*first))
+        if (json_isdigit(*first))
             digit = *first - '0';
 
         else if (*first >= 'a' && *first <= 'f')
@@ -44,7 +49,7 @@ enum jtokentype getJsonToken(string& tokenVal, unsigned int& consumed,
 
     const char *rawStart = raw;
 
-    while ((*raw) && (isspace(*raw)))             // skip whitespace
+    while ((*raw) && (json_isspace(*raw)))             // skip whitespace
         raw++;
 
     switch (*raw) {
@@ -113,18 +118,18 @@ enum jtokentype getJsonToken(string& tokenVal, unsigned int& consumed,
         const char *first = raw;
 
         const char *firstDigit = first;
-        if (!isdigit(*firstDigit))
+        if (!json_isdigit(*firstDigit))
             firstDigit++;
-        if ((*firstDigit == '0') && isdigit(firstDigit[1]))
+        if ((*firstDigit == '0') && json_isdigit(firstDigit[1]))
             return JTOK_ERR;
 
         numStr += *raw;                       // copy first char
         raw++;
 
-        if ((*first == '-') && (!isdigit(*raw)))
+        if ((*first == '-') && (!json_isdigit(*raw)))
             return JTOK_ERR;
 
-        while ((*raw) && isdigit(*raw)) {     // copy digits
+        while ((*raw) && json_isdigit(*raw)) {     // copy digits
             numStr += *raw;
             raw++;
         }
@@ -134,9 +139,9 @@ enum jtokentype getJsonToken(string& tokenVal, unsigned int& consumed,
             numStr += *raw;                   // copy .
             raw++;
 
-            if (!isdigit(*raw))
+            if (!json_isdigit(*raw))
                 return JTOK_ERR;
-            while ((*raw) && isdigit(*raw)) { // copy digits
+            while ((*raw) && json_isdigit(*raw)) { // copy digits
                 numStr += *raw;
                 raw++;
             }
@@ -152,9 +157,9 @@ enum jtokentype getJsonToken(string& tokenVal, unsigned int& consumed,
                 raw++;
             }
 
-            if (!isdigit(*raw))
+            if (!json_isdigit(*raw))
                 return JTOK_ERR;
-            while ((*raw) && isdigit(*raw)) { // copy digits
+            while ((*raw) && json_isdigit(*raw)) { // copy digits
                 numStr += *raw;
                 raw++;
             }
