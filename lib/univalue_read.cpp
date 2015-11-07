@@ -271,15 +271,16 @@ bool UniValue::read(const char *raw)
             return false;
         raw += consumed;
 
-        bool isValue = jsonTokenIsValue(tok);
+        bool isValueOpen = jsonTokenIsValue(tok) ||
+            tok == JTOK_OBJ_OPEN || tok == JTOK_ARR_OPEN;
 
         if (expect(VALUE)) {
-            if (!isValue)
+            if (!isValueOpen)
                 return false;
             clearExpect(VALUE);
 
         } else if (expect(ARR_VALUE)) {
-            bool isArrValue = isValue || (tok == JTOK_ARR_CLOSE);
+            bool isArrValue = isValueOpen || (tok == JTOK_ARR_CLOSE);
             if (!isArrValue)
                 return false;
 

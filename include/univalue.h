@@ -246,8 +246,6 @@ extern const char *uvTypeName(UniValue::VType t);
 static inline bool jsonTokenIsValue(enum jtokentype jtt)
 {
     switch (jtt) {
-    case JTOK_OBJ_OPEN:
-    case JTOK_ARR_OPEN:
     case JTOK_KW_NULL:
     case JTOK_KW_TRUE:
     case JTOK_KW_FALSE:
