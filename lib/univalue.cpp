@@ -121,7 +121,6 @@ bool UniValue::setNumStr(const string& val_)
 
 bool UniValue::setInt(uint64_t val_)
 {
-    string s;
     ostringstream oss;
 
     oss << val_;
@@ -131,7 +130,6 @@ bool UniValue::setInt(uint64_t val_)
 
 bool UniValue::setInt(int64_t val_)
 {
-    string s;
     ostringstream oss;
 
     oss << val_;
@@ -141,7 +139,6 @@ bool UniValue::setInt(int64_t val_)
 
 bool UniValue::setFloat(double val_)
 {
-    string s;
     ostringstream oss;
 
     oss << std::setprecision(16) << val_;
@@ -228,7 +225,7 @@ int UniValue::findKey(const std::string& key) const
 bool UniValue::checkObject(const std::map<std::string,UniValue::VType>& t)
 {
     for (std::map<std::string,UniValue::VType>::const_iterator it = t.begin();
-         it != t.end(); it++) {
+         it != t.end(); ++it) {
         int idx = findKey(it->first);
         if (idx < 0)
             return false;
