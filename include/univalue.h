@@ -92,6 +92,18 @@ public:
         std::string s(val_);
         return push_back(s);
     }
+    bool push_back(uint64_t val_) {
+        UniValue tmpVal(val_);
+        return push_back(tmpVal);
+    }
+    bool push_back(int64_t val_) {
+        UniValue tmpVal(val_);
+        return push_back(tmpVal);
+    }
+    bool push_back(int val_) {
+        UniValue tmpVal(val_);
+        return push_back(tmpVal);
+    }
     bool push_backV(const std::vector<UniValue>& vec);
 
     bool pushKV(const std::string& key, const UniValue& val);
