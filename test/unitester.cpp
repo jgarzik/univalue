@@ -125,6 +125,11 @@ static const char *filenames[] = {
         "pass3.json",
         "round1.json",              // round-trip test
         "round2.json",              // unicode
+        "round3.json",              // bare string
+        "round4.json",              // bare number
+        "round5.json",              // bare true
+        "round6.json",              // bare false
+        "round7.json",              // bare null
 };
 
 // Test \u handling

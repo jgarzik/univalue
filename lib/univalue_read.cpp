@@ -177,7 +177,7 @@ enum jtokentype getJsonToken(string& tokenVal, unsigned int& consumed,
         string valStr;
         JSONUTF8StringFilter writer(valStr);
 
-        while (*raw) {
+        while (true) {
             if ((unsigned char)*raw < 0x20)
                 return JTOK_ERR;
 
@@ -371,9 +371,6 @@ bool UniValue::read(const char *raw)
         case JTOK_KW_NULL:
         case JTOK_KW_TRUE:
         case JTOK_KW_FALSE: {
-            if (!stack.size())
-                return false;
-
             UniValue tmpVal;
             switch (tok) {
             case JTOK_KW_NULL:
@@ -388,6 +385,11 @@ bool UniValue::read(const char *raw)
             default: /* impossible */ break;
             }
 
+            if (!stack.size()) {
+                *this = tmpVal;
+                break;
+            }
+
             UniValue *top = stack.back();
             top->values.push_back(tmpVal);
 
@@ -396,10 +398,12 @@ bool UniValue::read(const char *raw)
             }
 
         case JTOK_NUMBER: {
-            if (!stack.size())
-                return false;
-
             UniValue tmpVal(VNUM, tokenVal);
+            if (!stack.size()) {
+                *this = tmpVal;
+                break;
+            }
+
             UniValue *top = stack.back();
             top->values.push_back(tmpVal);
 
@@ -408,17 +412,18 @@ bool UniValue::read(const char *raw)
             }
 
         case JTOK_STRING: {
-            if (!stack.size())
-                return false;
-
-            UniValue *top = stack.back();
-
             if (expect(OBJ_NAME)) {
+                UniValue *top = stack.back();
                 top->keys.push_back(tokenVal);
                 clearExpect(OBJ_NAME);
                 setExpect(COLON);
             } else {
                 UniValue tmpVal(VSTR, tokenVal);
+                if (!stack.size()) {
+                    *this = tmpVal;
+                    break;
+                }
+                UniValue *top = stack.back();
                 top->values.push_back(tmpVal);
             }
 
