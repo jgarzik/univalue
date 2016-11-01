@@ -104,7 +104,7 @@ static bool validNumStr(const string& s)
 {
     string tokenVal;
     unsigned int consumed;
-    enum jtokentype tt = getJsonToken(tokenVal, consumed, s.c_str());
+    enum jtokentype tt = getJsonToken(tokenVal, consumed, s.data(), s.data() + s.size());
     return (tt == JTOK_NUMBER);
 }
 

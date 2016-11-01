@@ -1,4 +1,5 @@
 unitester
+no_nul
 
 *.trs
 *.log
