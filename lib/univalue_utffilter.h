@@ -27,6 +27,8 @@ public:
                 is_valid = false;
             else if (ch < 0xe0) { // Start of 2-byte sequence
                 codepoint = (ch & 0x1f) << 6;
+                if (codepoint <= 0x7f)
+                    is_valid = false; // Unnecessary 2-byte sequence, invalid
                 state = 6;
             } else if (ch < 0xf0) { // Start of 3-byte sequence
                 codepoint = (ch & 0x0f) << 12;
