@@ -93,6 +93,11 @@ TEST_FILES = \
 	$(TEST_DATA_DIR)/pass2.json \
 	$(TEST_DATA_DIR)/pass3.json \
 	$(TEST_DATA_DIR)/round1.json \
-	$(TEST_DATA_DIR)/round2.json
+	$(TEST_DATA_DIR)/round2.json \
+	$(TEST_DATA_DIR)/round3.json \
+	$(TEST_DATA_DIR)/round4.json \
+	$(TEST_DATA_DIR)/round5.json \
+	$(TEST_DATA_DIR)/round6.json \
+	$(TEST_DATA_DIR)/round7.json
 
 EXTRA_DIST=$(TEST_FILES) $(GEN_SRCS)
