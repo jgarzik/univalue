@@ -114,6 +114,7 @@ static const char *filenames[] = {
         "fail40.json",               // invalid unicode: broken UTF-8
         "fail41.json",               // invalid unicode: unfinished UTF-8
         "fail42.json",               // valid json with garbage following a nul byte
+        "fail44.json",               // unterminated string
         "fail3.json",
         "fail4.json",                // extra comma
         "fail5.json",

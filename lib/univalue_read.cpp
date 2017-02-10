@@ -177,8 +177,8 @@ enum jtokentype getJsonToken(string& tokenVal, unsigned int& consumed,
         string valStr;
         JSONUTF8StringFilter writer(valStr);
 
-        while (raw < end) {
-            if ((unsigned char)*raw < 0x20)
+        while (true) {
+            if (raw >= end || (unsigned char)*raw < 0x20)
                 return JTOK_ERR;
 
             else if (*raw == '\\') {
