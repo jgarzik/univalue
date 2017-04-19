@@ -25,6 +25,9 @@ public:
         typ = initialType;
         val = initialStr;
     }
+    UniValue(size_t val_) {
+        setInt(val_);
+    }
     UniValue(uint64_t val_) {
         setInt(val_);
     }
@@ -54,6 +57,7 @@ public:
     bool setNull();
     bool setBool(bool val);
     bool setNumStr(const std::string& val);
+    bool setInt(size_t val_);
     bool setInt(uint64_t val);
     bool setInt(int64_t val);
     bool setInt(int val_) { return setInt((int64_t)val_); }
@@ -71,8 +75,8 @@ public:
     bool getBool() const { return isTrue(); }
     bool checkObject(const std::map<std::string,UniValue::VType>& memberTypes);
     const UniValue& operator[](const std::string& key) const;
-    const UniValue& operator[](unsigned int index) const;
-    bool exists(const std::string& key) const { return (findKey(key) >= 0); }
+    const UniValue& operator[](size_t index) const;
+    bool exists(const std::string& key) const { size_t i; return findKey(key, i); }
 
     bool isNull() const { return (typ == VNULL); }
     bool isTrue() const { return (typ == VBOOL) && (val == "1"); }
@@ -91,6 +95,10 @@ public:
     bool push_back(const char *val_) {
         std::string s(val_);
         return push_back(s);
+    }
+    bool push_back(size_t val_) {
+        UniValue tmpVal(val_);
+        return push_back(tmpVal);
     }
     bool push_back(uint64_t val_) {
         UniValue tmpVal(val_);
@@ -148,7 +156,7 @@ private:
     std::vector<std::string> keys;
     std::vector<UniValue> values;
 
-    int findKey(const std::string& key) const;
+    bool findKey(const std::string& key, size_t& ret) const;
     void writeArray(unsigned int prettyIndent, unsigned int indentLevel, std::string& s) const;
     void writeObject(unsigned int prettyIndent, unsigned int indentLevel, std::string& s) const;
 
@@ -187,6 +195,13 @@ static inline std::pair<std::string,UniValue> Pair(const char *cKey, std::string
 {
     std::string key(cKey);
     UniValue uVal(strVal);
+    return std::make_pair(key, uVal);
+}
+
+static inline std::pair<std::string,UniValue> Pair(const char *cKey, size_t sizeVal)
+{
+    std::string key(cKey);
+    UniValue uVal(sizeVal);
     return std::make_pair(key, uVal);
 }
 
