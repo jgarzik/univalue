@@ -212,22 +212,24 @@ bool UniValue::pushKVs(const UniValue& obj)
     return true;
 }
 
-int UniValue::findKey(const std::string& key) const
+bool UniValue::findKey(const std::string& key, size_t& retIdx) const
 {
-    for (unsigned int i = 0; i < keys.size(); i++) {
-        if (keys[i] == key)
-            return (int) i;
+    for (size_t i = 0; i < keys.size(); i++) {
+        if (keys[i] == key) {
+            retIdx = i;
+            return true;
+        }
     }
 
-    return -1;
+    return false;
 }
 
 bool UniValue::checkObject(const std::map<std::string,UniValue::VType>& t)
 {
     for (std::map<std::string,UniValue::VType>::const_iterator it = t.begin();
          it != t.end(); ++it) {
-        int idx = findKey(it->first);
-        if (idx < 0)
+        size_t idx = 0;
+        if (!findKey(it->first, idx))
             return false;
 
         if (values.at(idx).getType() != it->second)
@@ -242,8 +244,8 @@ const UniValue& UniValue::operator[](const std::string& key) const
     if (typ != VOBJ)
         return NullUniValue;
 
-    int index = findKey(key);
-    if (index < 0)
+    size_t index = 0;
+    if (!findKey(key, index))
         return NullUniValue;
 
     return values.at(index);
