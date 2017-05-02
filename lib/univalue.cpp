@@ -251,7 +251,7 @@ const UniValue& UniValue::operator[](const std::string& key) const
     return values.at(index);
 }
 
-const UniValue& UniValue::operator[](unsigned int index) const
+const UniValue& UniValue::operator[](size_t index) const
 {
     if (typ != VOBJ && typ != VARR)
         return NullUniValue;
