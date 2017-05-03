@@ -19,9 +19,11 @@ This project is a standard GNU
 project.  Build and install instructions are available in the `INSTALL`
 file provided with GNU autotools.
 
-```$ ./autogen.sh
+```
+$ ./autogen.sh
 $ ./configure
-$ make```
+$ make
+```
 
 ## Design
 
