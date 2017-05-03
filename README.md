@@ -17,7 +17,7 @@ This class is aligned with the JSON standard, [RFC
 This project is a standard GNU
 [autotools](https://www.gnu.org/software/automake/manual/html_node/Autotools-Introduction.html)
 project.  Build and install instructions are available in the `INSTALL`
-file following the `autogen.sh` step.
+file provided with GNU autotools.
 
 ```$ ./autogen.sh
 $ ./configure
