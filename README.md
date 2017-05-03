@@ -21,7 +21,7 @@ file provided with GNU autotools.
 
 ```$ ./autogen.sh
 $ ./configure
-$ make
+$ make```
 
 ## Design
 
