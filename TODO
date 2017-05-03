@@ -8,3 +8,8 @@ long Univalue::Univalue::Univalue usages forced upon library users.
 
 Improve test suite
 
+Add iterator support, and make erase() method more like vector::erase()
+with begin(), end() and all that entails.
+
+test/object:univalue_modify()   test for erase() true/false return
+

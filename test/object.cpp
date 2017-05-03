@@ -304,6 +304,76 @@ BOOST_AUTO_TEST_CASE(univalue_object)
     BOOST_CHECK_EQUAL(obj.size(), 0);
 }
 
+BOOST_AUTO_TEST_CASE(univalue_modify)
+{
+    UniValue arr(UniValue::VARR);
+
+    BOOST_CHECK(arr.push_back("one"));
+    BOOST_CHECK(arr.push_back("two"));
+    BOOST_CHECK(arr.push_back("three"));
+    BOOST_CHECK(arr.push_back("four"));
+    BOOST_CHECK_EQUAL(arr.size(), 4);
+
+    // out of bounds
+    arr.erase(4 + 1);
+    BOOST_CHECK_EQUAL(arr.size(), 4);
+
+    // list head
+    arr.erase(0);
+    BOOST_CHECK_EQUAL(arr.size(), 3);
+    BOOST_CHECK_EQUAL(arr[0].getValStr(), "two");
+    BOOST_CHECK_EQUAL(arr[1].getValStr(), "three");
+    BOOST_CHECK_EQUAL(arr[2].getValStr(), "four");
+
+    // list middle
+    arr.erase(1);
+    BOOST_CHECK_EQUAL(arr.size(), 2);
+    BOOST_CHECK_EQUAL(arr[0].getValStr(), "two");
+    BOOST_CHECK_EQUAL(arr[1].getValStr(), "four");
+
+    // list end
+    arr.erase(1);
+    BOOST_CHECK_EQUAL(arr.size(), 1);
+    BOOST_CHECK_EQUAL(arr[0].getValStr(), "two");
+
+    // out of bounds erase
+    arr.erase(1);
+    BOOST_CHECK_EQUAL(arr.size(), 1);
+    BOOST_CHECK_EQUAL(arr[0].getValStr(), "two");
+
+    // last item
+    arr.erase(0);
+    BOOST_CHECK_EQUAL(arr.size(), 0);
+
+    // erase on already-empty list
+    arr.erase(0);
+    BOOST_CHECK_EQUAL(arr.size(), 0);
+
+    UniValue obj(UniValue::VOBJ);
+    obj.pushKV("name", "trajan");
+    obj.pushKV("age", 60);
+    obj.pushKV("occupation", "emporer");
+    BOOST_CHECK_EQUAL(obj.size(), 3);
+    BOOST_CHECK_EQUAL(obj["name"].getValStr(), "trajan");
+    BOOST_CHECK_EQUAL(obj["age"].getValStr(), "60");
+    BOOST_CHECK_EQUAL(obj["occupation"].getValStr(), "emporer");
+
+    obj.erase("no-exist");
+    BOOST_CHECK_EQUAL(obj.size(), 3);
+
+    obj.erase("name");
+    BOOST_CHECK_EQUAL(obj.size(), 2);
+    BOOST_CHECK_EQUAL(obj["age"].getValStr(), "60");
+    BOOST_CHECK_EQUAL(obj["occupation"].getValStr(), "emporer");
+
+    obj.erase("age");
+    BOOST_CHECK_EQUAL(obj.size(), 1);
+    BOOST_CHECK_EQUAL(obj["occupation"].getValStr(), "emporer");
+
+    obj.erase("occupation");
+    BOOST_CHECK_EQUAL(obj.size(), 0);
+}
+
 static const char *json1 =
 "[1.10000000,{\"key1\":\"str\\u0000\",\"key2\":800,\"key3\":{\"name\":\"martian http://test.com\"}}]";
 
@@ -359,6 +429,7 @@ int main (int argc, char *argv[])
     univalue_set();
     univalue_array();
     univalue_object();
+    univalue_modify();
     univalue_readwrite();
     return 0;
 }

@@ -83,6 +83,9 @@ public:
     bool isArray() const { return (typ == VARR); }
     bool isObject() const { return (typ == VOBJ); }
 
+    bool erase(size_t arrayIdx);
+    bool erase(const std::string& objectKey);
+
     bool push_back(const UniValue& val);
     bool push_back(const std::string& val_) {
         UniValue tmpVal(VSTR, val_);
