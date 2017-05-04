@@ -12,6 +12,7 @@ pkgconfig_DATA = pc/libunivalue.pc
 
 libunivalue_la_SOURCES = \
 	lib/univalue.cpp \
+	lib/univalue_get.cpp \
 	lib/univalue_read.cpp \
 	lib/univalue_write.cpp
 
