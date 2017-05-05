@@ -205,14 +205,23 @@ BOOST_AUTO_TEST_CASE(univalue_array)
 
     BOOST_CHECK(arr.push_backV(vec));
 
+    BOOST_CHECK(arr.push_back((uint64_t) 400ULL));
+    BOOST_CHECK(arr.push_back((int64_t) -400LL));
+    BOOST_CHECK(arr.push_back((int) -401));
+    BOOST_CHECK(arr.push_back(-40.1));
+
     BOOST_CHECK_EQUAL(arr.empty(), false);
-    BOOST_CHECK_EQUAL(arr.size(), 5);
+    BOOST_CHECK_EQUAL(arr.size(), 9);
 
     BOOST_CHECK_EQUAL(arr[0].getValStr(), "1023");
     BOOST_CHECK_EQUAL(arr[1].getValStr(), "zippy");
     BOOST_CHECK_EQUAL(arr[2].getValStr(), "pippy");
     BOOST_CHECK_EQUAL(arr[3].getValStr(), "boing");
     BOOST_CHECK_EQUAL(arr[4].getValStr(), "going");
+    BOOST_CHECK_EQUAL(arr[5].getValStr(), "400");
+    BOOST_CHECK_EQUAL(arr[6].getValStr(), "-400");
+    BOOST_CHECK_EQUAL(arr[7].getValStr(), "-401");
+    BOOST_CHECK_EQUAL(arr[8].getValStr(), "-40.1");
 
     BOOST_CHECK_EQUAL(arr[999].getValStr(), "");
 
