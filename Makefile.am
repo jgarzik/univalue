@@ -114,3 +114,15 @@ TEST_FILES = \
 	$(TEST_DATA_DIR)/round7.json
 
 EXTRA_DIST=$(TEST_FILES) $(GEN_SRCS)
+
+if HAVE_DOXYGEN
+doxyfile.stamp:
+	$(DOXYGEN) docs/Doxyfile
+	echo Timestamp > doxyfile.stamp
+
+CLEANFILES = doxyfile.stamp
+
+all-local: doxyfile.stamp
+clean-local:
+	rm -rf $(top_srcdir)/docs/html
+endif
