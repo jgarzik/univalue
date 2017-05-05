@@ -7,6 +7,7 @@
 #define __UNIVALUE_H__
 
 #include <stdint.h>
+#include <string.h>
 
 #include <string>
 #include <vector>
@@ -137,7 +138,7 @@ public:
                       unsigned int indentLevel = 0) const;
 
     bool read(const char *raw, size_t len);
-    bool read(const char *raw);
+    bool read(const char *raw) { return read(raw, strlen(raw)); }
     bool read(const std::string& rawStr) {
         return read(rawStr.data(), rawStr.size());
     }
