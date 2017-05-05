@@ -116,7 +116,7 @@ TEST_FILES = \
 EXTRA_DIST=$(TEST_FILES) $(GEN_SRCS)
 
 if HAVE_DOXYGEN
-doxyfile.stamp:
+doxyfile.stamp: $(include_HEADERS) $(libunivalue_la_SOURCES)
 	$(DOXYGEN) docs/Doxyfile
 	echo Timestamp > doxyfile.stamp
 
