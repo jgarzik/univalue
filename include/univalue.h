@@ -1,7 +1,13 @@
-// Copyright 2014 BitPay Inc.
-// Copyright 2015 Bitcoin Core Developers
-// Distributed under the MIT software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+/**
+ * @file univalue.h
+ * @brief Header file of univalue library.
+ *
+ *
+ * Copyright 2014 BitPay Inc.
+ * Copyright 2015 Bitcoin Core Developers
+ * Distributed under the MIT software license, see the accompanying
+ * file COPYING or http://www.opensource.org/licenses/mit-license.php.
+ */
 
 #ifndef __UNIVALUE_H__
 #define __UNIVALUE_H__
@@ -17,90 +23,283 @@
 #include <sstream>        // .get_int64()
 #include <utility>        // std::pair
 
+/*!
+ * UniValue class
+ */
 class UniValue {
 public:
-    enum VType { VNULL, VOBJ, VARR, VSTR, VNUM, VBOOL, };
+    /** Enum of UniValue types
+     *
+     */
+    enum VType {
+        VNULL,  /**< Empty value type */
+        VOBJ,   /**< Object value type */
+        VARR,   /**< Array value type */
+        VSTR,   /**< String value type */
+        VNUM,   /**< Number value type */
+        VBOOL,  /**< Booleam value type */
+    };
 
+    /**
+     * Default constructor.
+     * Default constructor initializes the instance with empty object of \a VNULL type.
+     */
     UniValue() { typ = VNULL; }
+
+    /**
+     * Constructor with given type and value.
+     * @param initialType The intial type of this UniValue object.
+     * @param intialStr Optional initial value, empty string by default.
+     * @see UniValue::VType
+     */
     UniValue(UniValue::VType initialType, const std::string& initialStr = "") {
         typ = initialType;
         val = initialStr;
     }
+
+    /**
+     * Constructor with given unsigned 64 bit integer value.
+     * The type of created object will be \a VNUM.
+     * @param val_ A uint64_t type of value.
+     * @see setInt()
+     */
     UniValue(uint64_t val_) {
         setInt(val_);
     }
+
+    /**
+     * Constructor with given signed 64 bit integer value.
+     * The type of created object will be \a VNUM.
+     * @param val_ A int64_t type of value.
+     * @see setInt()
+     */
     UniValue(int64_t val_) {
         setInt(val_);
     }
+
+    /**
+     * Constructor with given boolean value.
+     * The type of created object will be \a VBOOL.
+     * @param val_ A boolean value.
+     * @see setBool()
+     */
     UniValue(bool val_) {
         setBool(val_);
     }
+
+    /**
+     * Constructor with given int value.
+     * The type of created object will be \a VNUM.
+     * @param val_ A int value.
+     * @see setInt()
+     */
     UniValue(int val_) {
         setInt(val_);
     }
+
+    /**
+     * Constructor with given double value.
+     * The type of created object will be \a VNUM.
+     * @param val_ A double value.
+     * @see setFloat()
+     */
     UniValue(double val_) {
         setFloat(val_);
     }
+
+    /**
+     * Constructor with given string value.
+     * The type of created object will be \a VSTR.
+     * @param val_ A STL string value.
+     * @see setStr()
+     */
     UniValue(const std::string& val_) {
         setStr(val_);
     }
+
+    /**
+     * Constructor with given string value.
+     * The type of created object will be \a VSTR.
+     * @param val_ A null terminated string value.
+     * @see setStr()
+     */
     UniValue(const char *val_) {
         std::string s(val_);
         setStr(s);
     }
+
+    /**
+     * Destructor
+     */
     ~UniValue() {}
 
+    /**
+     * Reset the object to be null object.
+     * @see UniValue::VNULL
+     * @see setNull()
+     */
     void clear();
 
+    /**
+     * Reset the object to be null object.
+     * @see UniValue::VNULL
+     * @see clear()
+     * @return true for success, otherwise false
+     */
     bool setNull();
+
+    /**
+     * Set the object to be boolean type object with \a val as value.
+     * @param val the boolean value to be stored in object.
+     * @return true for success, oterwise false.
+     */
     bool setBool(bool val);
+
+    /**
+     *
+     */
     bool setNumStr(const std::string& val);
+    /**
+     *
+     */
     bool setInt(uint64_t val);
+    /**
+     *
+     */
     bool setInt(int64_t val);
+    /**
+     *
+     */
     bool setInt(int val_) { return setInt((int64_t)val_); }
+    /**
+     *
+     */
     bool setFloat(double val);
+    /**
+     *
+     */
     bool setStr(const std::string& val);
+    /**
+     *
+     */
     bool setArray();
+    /**
+     *
+     */
     bool setObject();
 
+    /**
+     *
+     */
     enum VType getType() const { return typ; }
+    /**
+     *
+     */
     const std::string& getValStr() const { return val; }
+    /**
+     *
+     */
     bool empty() const { return (values.size() == 0); }
 
+    /**
+     *
+     */
     size_t size() const { return values.size(); }
 
+    /**
+     *
+     */
     bool getBool() const { return isTrue(); }
+    /**
+     *
+     */
     bool checkObject(const std::map<std::string,UniValue::VType>& memberTypes);
+    /**
+     *
+     */
     const UniValue& operator[](const std::string& key) const;
+    /**
+     *
+     */
     const UniValue& operator[](size_t index) const;
+    /**
+     *
+     */
     bool exists(const std::string& key) const { size_t i; return findKey(key, i); }
 
+    /**
+     *
+     */
     bool isNull() const { return (typ == VNULL); }
+    /**
+     *
+     */
     bool isTrue() const { return (typ == VBOOL) && (val == "1"); }
+    /**
+     *
+     */
     bool isFalse() const { return (typ == VBOOL) && (val != "1"); }
+    /**
+     *
+     */
     bool isBool() const { return (typ == VBOOL); }
+    /**
+     *
+     */
     bool isStr() const { return (typ == VSTR); }
+    /**
+     *
+     */
     bool isNum() const { return (typ == VNUM); }
+    /**
+     *
+     */
     bool isArray() const { return (typ == VARR); }
+    /**
+     *
+     */
     bool isObject() const { return (typ == VOBJ); }
 
+    /**
+     *
+     */
     bool push_back(const UniValue& val);
+
+    /**
+     *
+     */
     bool push_back(const std::string& val_) {
         UniValue tmpVal(VSTR, val_);
         return push_back(tmpVal);
     }
+
+    /**
+     *
+     */
     bool push_back(const char *val_) {
         std::string s(val_);
         return push_back(s);
     }
+
+    /**
+     *
+     */
     bool push_back(uint64_t val_) {
         UniValue tmpVal(val_);
         return push_back(tmpVal);
     }
+
+    /**
+     *
+     */
     bool push_back(int64_t val_) {
         UniValue tmpVal(val_);
         return push_back(tmpVal);
     }
+
+    /**
+     *
+     */
     bool push_back(int val_) {
         UniValue tmpVal(val_);
         return push_back(tmpVal);
@@ -109,40 +308,85 @@ public:
         UniValue tmpVal(val_);
         return push_back(tmpVal);
     }
+
+    /**
+     *
+     */
     bool push_backV(const std::vector<UniValue>& vec);
 
+    /**
+     *
+     */
     bool pushKV(const std::string& key, const UniValue& val);
+
+    /**
+     *
+     */
     bool pushKV(const std::string& key, const std::string& val_) {
         UniValue tmpVal(VSTR, val_);
         return pushKV(key, tmpVal);
     }
+
+    /**
+     *
+     */
     bool pushKV(const std::string& key, const char *val_) {
         std::string _val(val_);
         return pushKV(key, _val);
     }
+
+    /**
+     *
+     */
     bool pushKV(const std::string& key, int64_t val_) {
         UniValue tmpVal(val_);
         return pushKV(key, tmpVal);
     }
+
+    /**
+     *
+     */
     bool pushKV(const std::string& key, uint64_t val_) {
         UniValue tmpVal(val_);
         return pushKV(key, tmpVal);
     }
+
+    /**
+     *
+     */
     bool pushKV(const std::string& key, int val_) {
         UniValue tmpVal((int64_t)val_);
         return pushKV(key, tmpVal);
     }
+
+    /**
+     *
+     */
     bool pushKV(const std::string& key, double val_) {
         UniValue tmpVal(val_);
         return pushKV(key, tmpVal);
     }
+
+    /**
+     *
+     */
     bool pushKVs(const UniValue& obj);
 
+    /**
+     *
+     */
     std::string write(unsigned int prettyIndent = 0,
                       unsigned int indentLevel = 0) const;
 
+    /**
+     *
+     */
     bool read(const char *raw, size_t len);
     bool read(const char *raw) { return read(raw, strlen(raw)); }
+
+    /**
+     *
+     */
     bool read(const std::string& rawStr) {
         return read(rawStr.data(), rawStr.size());
     }
@@ -160,20 +404,56 @@ private:
 public:
     // Strict type-specific getters, these throw std::runtime_error if the
     // value is of unexpected type
+    /**
+     *
+     */
     const std::vector<std::string>& getKeys() const;
+    /**
+     *
+     */
     const std::vector<UniValue>& getValues() const;
+    /**
+     *
+     */
     bool get_bool() const;
+    /**
+     *
+     */
     const std::string& get_str() const;
+    /**
+     *
+     */
     int get_int() const;
+    /**
+     *
+     */
     int64_t get_int64() const;
+    /**
+     *
+     */
     double get_real() const;
+    /**
+     *
+     */
     const UniValue& get_obj() const;
+    /**
+     *
+     */
     const UniValue& get_array() const;
 
+    /**
+     *
+     */
     enum VType type() const { return getType(); }
+    /**
+     *
+     */
     bool push_back(std::pair<std::string,UniValue> pear) {
         return pushKV(pear.first, pear.second);
     }
+    /**
+     *
+     */
     friend const UniValue& find_value( const UniValue& obj, const std::string& name);
 };
 
