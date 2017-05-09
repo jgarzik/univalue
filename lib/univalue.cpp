@@ -163,9 +163,9 @@ bool UniValue::findKey(const std::string& key, size_t& retIdx) const
 
 bool UniValue::checkObject(const std::map<std::string,UniValue::VType>& t)
 {
+    size_t idx = 0;
     for (std::map<std::string,UniValue::VType>::const_iterator it = t.begin();
          it != t.end(); ++it) {
-        size_t idx = 0;
         if (!findKey(it->first, idx))
             return false;
 
