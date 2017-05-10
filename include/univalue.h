@@ -89,7 +89,7 @@ public:
 
     /**
      * Constructor with given int value.
-     * The type of created object will be \a VNUM.
+     * The type of created object will be \a UniValue::VNUM.
      * @param val_ A int value.
      * @see setInt()
      */
@@ -99,7 +99,7 @@ public:
 
     /**
      * Constructor with given double value.
-     * The type of created object will be \a VNUM.
+     * The type of created object will be \a UniValue::VNUM.
      * @param val_ A double value.
      * @see setFloat()
      */
@@ -109,7 +109,7 @@ public:
 
     /**
      * Constructor with given string value.
-     * The type of created object will be \a VSTR.
+     * The type of created object will be \a UniValue::VSTR.
      * @param val_ A STL string value.
      * @see setStr()
      */
@@ -119,7 +119,7 @@ public:
 
     /**
      * Constructor with given string value.
-     * The type of created object will be \a VSTR.
+     * The type of created object will be \a UniValue::VSTR.
      * @param val_ A null terminated string value.
      * @see setStr()
      */
@@ -156,72 +156,129 @@ public:
     bool setBool(bool val);
 
     /**
-     *
+     * Set the object to be number type with given string \a val as value.
+     * @param val a number string.
+     * @return true if given value was valid number, otherwise false.
+     * @see UniValue::VNUM
      */
     bool setNumStr(const std::string& val);
+
     /**
-     *
+     * Set the object to be number type with given \a val as value.
+     * @param val a uint64_t value.
+     * @return true if success, otherwise false.
+     * @see setNumStr()
+     * @see UniValue::VNUM
      */
     bool setInt(uint64_t val);
+
     /**
-     *
+     * Set the object to be number type with given \a val as value.
+     * @param val as int64_t value.
+     * @return true if sccess, otherwise false.
+     * @set setNumStr()
+     * @see UniValue::VNUM
      */
     bool setInt(int64_t val);
+
     /**
-     *
+     * Set the object to be number type with given \a val as value.
+     * @param val as int value.
+     * return true if success, otherwise false.
+     * @see setNumStr()
+     * @see UniValue::VNUM
      */
     bool setInt(int val_) { return setInt((int64_t)val_); }
+
     /**
+     * Set the object to be number type with given \a val as value.
+     * The precision stored internally is 16.
      *
+     * @param val as double value.
+     * @return true if success, otherwise false.
+     * @see setNumStr()
      */
     bool setFloat(double val);
+
     /**
-     *
+     * Set the object to be string type with given \a val as value.
+     * @param val as std::string value.
+     * @return true if success, otherwise false.
+     * @see UniValue::VSTR
      */
     bool setStr(const std::string& val);
+
     /**
-     *
+     * Set the object to be empty array type.
+     * @return true if success, otherwise false.
+     * @see UniValue::VARR
      */
     bool setArray();
+
     /**
-     *
+     * Set the object to be empty object type.
+     * @return true if success, otherwise false.
+     * @see UniValue::VOBJ
      */
     bool setObject();
 
     /**
-     *
+     * Get the current stored value type.
+     * @return the actual stored value type.
+     * @see UniValue::VType
      */
     enum VType getType() const { return typ; }
+
     /**
-     *
+     * Get the stored value as string.
+     * @return the string value of stored value type.
      */
     const std::string& getValStr() const { return val; }
+
     /**
-     *
+     * Check if the object stored any child elements.
+     * Only possible true if the value types were UniValue::VARR or
+     * UniValue::VOBJ and had added child elements.
+     * @return true if no child elements stored, otherwise return false.
+     * @see isArray()
+     * @see isObject()
      */
     bool empty() const { return (values.size() == 0); }
 
     /**
-     *
+     * Return the children value count
+     * @return the actual size of added child elements.
      */
     size_t size() const { return values.size(); }
 
     /**
-     *
+     * Get the stored value as boolean.
+     * @return true if the stored type is UniValue::VBOOL and value is true,
+     * otherwise false.
+     * @see isTrue()
      */
     bool getBool() const { return isTrue(); }
+
     /**
-     *
+     * Check the object stores all keys of given \a memberTypes.
+     * @param memberTypes key to key type map.
+     * @return true if the object stored was object type and all keys could be found
+     * inside this object and also the types of these found keys were same, otherwise return false.
+     * @see UniValue::VType
+     * @see isObject()
      */
     bool checkObject(const std::map<std::string,UniValue::VType>& memberTypes);
+
     /**
      *
      */
     const UniValue& operator[](const std::string& key) const;
+
     /**
      *
      */
     const UniValue& operator[](size_t index) const;
+
     /**
      *
      */
@@ -231,30 +288,37 @@ public:
      *
      */
     bool isNull() const { return (typ == VNULL); }
+
     /**
      *
      */
     bool isTrue() const { return (typ == VBOOL) && (val == "1"); }
+
     /**
      *
      */
     bool isFalse() const { return (typ == VBOOL) && (val != "1"); }
+
     /**
      *
      */
     bool isBool() const { return (typ == VBOOL); }
+
     /**
      *
      */
     bool isStr() const { return (typ == VSTR); }
+
     /**
      *
      */
     bool isNum() const { return (typ == VNUM); }
+
     /**
      *
      */
     bool isArray() const { return (typ == VARR); }
+
     /**
      *
      */
