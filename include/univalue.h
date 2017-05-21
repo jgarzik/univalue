@@ -256,6 +256,7 @@ public:
      * @return true if the stored type is UniValue::VBOOL and value is true,
      * otherwise false.
      * @see isTrue()
+     * @see get_bool()
      */
     bool getBool() const { return isTrue(); }
 
@@ -270,67 +271,103 @@ public:
     bool checkObject(const std::map<std::string,UniValue::VType>& memberTypes);
 
     /**
-     *
+     * Access child value by given \a key.
+     * @param key the key string value to be searched.
+     * @return constant reference of child value object if key was found, otherwise retun Null value object.
+     * @see exists()
      */
     const UniValue& operator[](const std::string& key) const;
 
     /**
-     *
+     * Access child value of array object by given \a index.
+     * @param index the index position of child value object.
+     * @return constant reference of child value object if index was valid and parent object is array type, otherwise retun Null value object.
+     * @see UniValue::VARR
      */
     const UniValue& operator[](size_t index) const;
 
     /**
-     *
+     * Check if the given \a key is exists in this object or not.
+     * @param key the key string to be searched for.
+     * @return true if the \a key could be found, otherwise return false.
+     * @see findKey()
      */
     bool exists(const std::string& key) const { size_t i; return findKey(key, i); }
 
     /**
-     *
+     * Check if the object is a null object.
+     * @return true if object is null object, otherwise false.
+     * @see UniValue::VNULL
      */
     bool isNull() const { return (typ == VNULL); }
 
     /**
-     *
+     * Check if the object holds a 'true' boolean value.
+     * @return true if the object is boolean object and value is 'true', otherwise return false.
+     * @see UniValue::VBOOL
+     * @see isFalse()
+     * @see isBool()
      */
     bool isTrue() const { return (typ == VBOOL) && (val == "1"); }
 
     /**
-     *
+     * Check if the object holds a 'false' boolean value.
+     * @return true if the object is boolean object and value is 'false', otherwise return false.
+     * @see UniValue::VBOOL
+     * @see isTrue()
+     * @see isBool()
      */
     bool isFalse() const { return (typ == VBOOL) && (val != "1"); }
 
     /**
-     *
+     * Check if the object holds a boolean value.
+     * @return true if the object is a boolean object, otherwise return false.
+     * @see UniValue::VBOOL
      */
     bool isBool() const { return (typ == VBOOL); }
 
     /**
-     *
+     * Check if the object holds a string value.
+     * @return true if the object is a string object, otherwise return false.
+     * @see UniValue::VSTR
      */
     bool isStr() const { return (typ == VSTR); }
 
     /**
-     *
+     * Check if the object holds a numeric value.
+     * @return true if the object is a number object, otherwise return false.
+     * @see UniValue::VNUM
      */
     bool isNum() const { return (typ == VNUM); }
 
     /**
-     *
+     * Check if the object is an array object.
+     * A 'Array' object can holds a list of children elements.
+     * @return true if the object is an array object, otherwise return false.
+     * @see UniValue::VARR
      */
     bool isArray() const { return (typ == VARR); }
 
     /**
-     *
+     * Check if the value object is an 'Object' type object.
+     * An 'Object' value type can holds a list of key<=>value pairs as its children elements.
+     * @return true if the value object is an 'Object' type object, otherwise return false.
+     * @see UniValue::VOBJ
      */
     bool isObject() const { return (typ == VOBJ); }
 
     /**
+     * Append the given \a val value object to the array object's children list.
+     * @return true if this object is array object and given \a val was added successfully, otherwise return false.
      *
+     * @see isArray()
      */
     bool push_back(const UniValue& val);
 
     /**
-     *
+     * Append the given std::string \a val_ as a child value object to the array object's children list.
+     * @retrurn true if this object is array object and given string \a val_ was added successfully, otherwise return false.
+     * @see isArray()
      */
     bool push_back(const std::string& val_) {
         UniValue tmpVal(VSTR, val_);
@@ -338,7 +375,9 @@ public:
     }
 
     /**
-     *
+     * Append the given null terminated string \a val_ as a child value object to the array object's children list.
+     * @return true if this object is array object and given \a val_ was added successfully, otherwise return false.
+     * @see isArray()
      */
     bool push_back(const char *val_) {
         std::string s(val_);
@@ -374,7 +413,11 @@ public:
     }
 
     /**
-     *
+     * Merge given list of value objects into this object.
+     * Append the list of value objects into this array object's children list and return true, if this object is not a array, return false.
+     * @see push_back()
+     * @see isArray()
+     * @see UniValue::VARR
      */
     bool push_backV(const std::vector<UniValue>& vec);
 
@@ -437,19 +480,38 @@ public:
     bool pushKVs(const UniValue& obj);
 
     /**
-     *
+     * Serialize this object as JSON string.
+     * @param prettyIndent
+     * @param indentLevel
+     * @return the serialized JSON string.
+     * @see read()
      */
     std::string write(unsigned int prettyIndent = 0,
                       unsigned int indentLevel = 0) const;
 
     /**
-     *
+     * Convert the given null terminated JSON string \raw into UniValue object.
+     * @param raw the null terminated string which contains JSON content.
+     * @param len the maximum accepted string length.
+     * @return true if converted successfully, otherwise return false.
+     * @see write()
      */
     bool read(const char *raw, size_t len);
+
+    /**
+     * Convert the given null terminated JSON string \raw into UniValue object.
+     * Note: strlen() is used to detemine the actual string size.
+     * @param raw the null terminated string which contains JSON content.
+     * @return true if converted successfully, otherwise return false.
+     * @see write()
+     * @see strlen()
+     */
     bool read(const char *raw) { return read(raw, strlen(raw)); }
 
     /**
-     *
+     * Convert the given JSON string \a rawStr into UniValue object.
+     * @param rawStr
+     * @return true if converted successfully, otherwise return false.
      */
     bool read(const std::string& rawStr) {
         return read(rawStr.data(), rawStr.size());
@@ -507,6 +569,7 @@ public:
 
     /**
      *
+     * @see getType()
      */
     enum VType type() const { return getType(); }
     /**
