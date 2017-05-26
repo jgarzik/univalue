@@ -266,42 +266,55 @@ bool UniValue::read(const char *raw, size_t size)
         last_tok = tok;
 
         tok = getJsonToken(tokenVal, consumed, raw, end);
-        if (tok == JTOK_NONE || tok == JTOK_ERR)
+        if (tok == JTOK_NONE || tok == JTOK_ERR) {
+            setNull();
             return false;
+        }
         raw += consumed;
 
         bool isValueOpen = jsonTokenIsValue(tok) ||
             tok == JTOK_OBJ_OPEN || tok == JTOK_ARR_OPEN;
 
         if (expect(VALUE)) {
-            if (!isValueOpen)
+            if (!isValueOpen) {
+                setNull();
                 return false;
+            }
             clearExpect(VALUE);
 
         } else if (expect(ARR_VALUE)) {
             bool isArrValue = isValueOpen || (tok == JTOK_ARR_CLOSE);
-            if (!isArrValue)
+            if (!isArrValue) {
+                setNull();
                 return false;
+            }
 
             clearExpect(ARR_VALUE);
 
         } else if (expect(OBJ_NAME)) {
             bool isObjName = (tok == JTOK_OBJ_CLOSE || tok == JTOK_STRING);
-            if (!isObjName)
+            if (!isObjName) {
+                setNull();
                 return false;
+            }
 
         } else if (expect(COLON)) {
-            if (tok != JTOK_COLON)
+            if (tok != JTOK_COLON) {
+                setNull();
                 return false;
+            }
             clearExpect(COLON);
 
         } else if (!expect(COLON) && (tok == JTOK_COLON)) {
+            setNull();
             return false;
         }
 
         if (expect(NOT_VALUE)) {
-            if (isValueOpen)
+            if (isValueOpen) {
+                setNull();
                 return false;
+            }
             clearExpect(NOT_VALUE);
         }
 
@@ -334,13 +347,17 @@ bool UniValue::read(const char *raw, size_t size)
 
         case JTOK_OBJ_CLOSE:
         case JTOK_ARR_CLOSE: {
-            if (!stack.size() || (last_tok == JTOK_COMMA))
+            if (!stack.size() || (last_tok == JTOK_COMMA)) {
+                setNull();
                 return false;
+            }
 
             VType utyp = (tok == JTOK_OBJ_CLOSE ? VOBJ : VARR);
             UniValue *top = stack.back();
-            if (utyp != top->getType())
+            if (utyp != top->getType()) {
+                setNull();
                 return false;
+            }
 
             stack.pop_back();
             clearExpect(OBJ_NAME);
@@ -349,12 +366,16 @@ bool UniValue::read(const char *raw, size_t size)
             }
 
         case JTOK_COLON: {
-            if (!stack.size())
+            if (!stack.size()) {
+                setNull();
                 return false;
+            }
 
             UniValue *top = stack.back();
-            if (top->getType() != VOBJ)
+            if (top->getType() != VOBJ) {
+                setNull();
                 return false;
+            }
 
             setExpect(VALUE);
             break;
@@ -362,8 +383,10 @@ bool UniValue::read(const char *raw, size_t size)
 
         case JTOK_COMMA: {
             if (!stack.size() ||
-                (last_tok == JTOK_COMMA) || (last_tok == JTOK_ARR_OPEN))
+                (last_tok == JTOK_COMMA) || (last_tok == JTOK_ARR_OPEN)) {
+                setNull();
                 return false;
+            }
 
             UniValue *top = stack.back();
             if (top->getType() == VOBJ)
@@ -437,14 +460,17 @@ bool UniValue::read(const char *raw, size_t size)
             }
 
         default:
+            setNull();
             return false;
         }
     } while (!stack.empty ());
 
     /* Check that nothing follows the initial construct (parsed above).  */
     tok = getJsonToken(tokenVal, consumed, raw, end);
-    if (tok != JTOK_NONE)
+    if (tok != JTOK_NONE) {
+        setNull();
         return false;
+    }
 
     return true;
 }
