@@ -30,3 +30,7 @@ test-suite.log
 
 .dirstamp
 .libs
+docs/Doxyfile
+docs/html/
+doxyfile.stamp
+
