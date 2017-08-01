@@ -131,6 +131,7 @@ bool UniValue::pushKV(const std::string& key, const UniValue& val_)
     if (typ != VOBJ)
         return false;
 
+    //FIXME: check key exists ?
     keys.push_back(key);
     values.push_back(val_);
     return true;

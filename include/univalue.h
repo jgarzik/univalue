@@ -232,6 +232,7 @@ public:
     /**
      * Get the stored value as string.
      * @return the string value of stored value type.
+     * @see get_str()
      */
     const std::string& getValStr() const { return val; }
 
@@ -385,7 +386,9 @@ public:
     }
 
     /**
-     *
+     * Append the given unsigned 64bit integer \a val_ as a child value object to the array object's children list.
+     * @return true if this object is array object and given \a val_ was added successfully, otherwise return false.
+     * @see isArray()
      */
     bool push_back(uint64_t val_) {
         UniValue tmpVal(val_);
@@ -393,7 +396,9 @@ public:
     }
 
     /**
-     *
+     * Append the given 64bit integer \a val_ as a child value object to the array object's children list.
+     * @return true if this object is array object and given \a val_ was added successfully, otherwise return false.
+     * @see isArray()
      */
     bool push_back(int64_t val_) {
         UniValue tmpVal(val_);
@@ -401,12 +406,20 @@ public:
     }
 
     /**
-     *
+     * Append the given integer \a val_ as a child value object to the array object's children list.
+     * @return true if this object is array object and given \a val_ was added successfully, otherwise return false.
+     * @see isArray()
      */
     bool push_back(int val_) {
         UniValue tmpVal(val_);
         return push_back(tmpVal);
     }
+
+    /**
+     * Append the given double float \a val_ as a child value object to the array object's children list.
+     * @return true if this object is array object and given \a val_ was added successfully, otherwise return false.
+     * @see isArray()
+     */
     bool push_back(double val_) {
         UniValue tmpVal(val_);
         return push_back(tmpVal);
@@ -418,16 +431,25 @@ public:
      * @see push_back()
      * @see isArray()
      * @see UniValue::VARR
+     * @return true if object is array and added successfully.
      */
     bool push_backV(const std::vector<UniValue>& vec);
 
     /**
-     *
+     * Add new \a UniValue property to this object.
+     * Add a new key-value pair to this object, with \a key as property name and \a val as property value.
+     * @see push_back()
+     * @see isObject()
+     * @return true if this is an object type and property was added successfully.
      */
     bool pushKV(const std::string& key, const UniValue& val);
 
     /**
-     *
+     * Add new string property to this object.
+     * Add a new key-value pair to this object, with \a key as property name and \a val as string property value.
+     * @see push_back()
+     * @see isObject()
+     * @return true if this is an object type and property was added successfully.
      */
     bool pushKV(const std::string& key, const std::string& val_) {
         UniValue tmpVal(VSTR, val_);
@@ -435,7 +457,11 @@ public:
     }
 
     /**
-     *
+     * Add new null terminated string property to this object.
+     * Add a new key-value pair to this object, with \a key as property name and \a val as string property value.
+     * @see push_back()
+     * @see isObject()
+     * @return true if this is an object type and property was added successfully.
      */
     bool pushKV(const std::string& key, const char *val_) {
         std::string _val(val_);
@@ -443,7 +469,11 @@ public:
     }
 
     /**
-     *
+     * Add new 64 bit integer value property to this object.
+     * Add a new key-value pair to this object, with \a key as property name and \a val as property value.
+     * @see push_back()
+     * @see isObject()
+     * @return true if this is an object type and property was added successfully.
      */
     bool pushKV(const std::string& key, int64_t val_) {
         UniValue tmpVal(val_);
@@ -451,7 +481,11 @@ public:
     }
 
     /**
-     *
+     * Add new unsigned 64 bit integer value property to this object.
+     * Add a new key-value pair to this object, with \a key as property name and \a val as property value.
+     * @see push_back()
+     * @see isObject()
+     * @return true if this is an object type and property was added successfully.
      */
     bool pushKV(const std::string& key, uint64_t val_) {
         UniValue tmpVal(val_);
@@ -459,7 +493,11 @@ public:
     }
 
     /**
-     *
+     * Add new integer value property to this object.
+     * Add a new key-value pair to this object, with \a key as property name and \a val as property value.
+     * @see push_back()
+     * @see isObject()
+     * @return true if this is an object type and property was added successfully.
      */
     bool pushKV(const std::string& key, int val_) {
         UniValue tmpVal((int64_t)val_);
@@ -467,7 +505,11 @@ public:
     }
 
     /**
-     *
+     * Add new double float value property to this object.
+     * Add a new key-value pair to this object, with \a key as property name and \a val as property value.
+     * @see push_back()
+     * @see isObject()
+     * @return true if this is an object type and property was added successfully.
      */
     bool pushKV(const std::string& key, double val_) {
         UniValue tmpVal(val_);
@@ -475,7 +517,11 @@ public:
     }
 
     /**
-     *
+     * Merge given \a UniValue object \a obj into this object.
+     * Note: both the given \a obj parameter and this object must have type as UniValue::OBJ.
+     * @see push_back()
+     * @see isObject()
+     * @return true if this is an object type and property was added successfully.
      */
     bool pushKVs(const UniValue& obj);
 
@@ -530,56 +576,105 @@ private:
 public:
     // Strict type-specific getters, these throw std::runtime_error if the
     // value is of unexpected type
+
     /**
-     *
+     * Get all keys from this object
+     * @throw std::runtime_error if this object type is not UniValue::OBJ
+     * @return the vector of all keys
      */
     const std::vector<std::string>& getKeys() const;
+
     /**
-     *
+     * Get all values from this object
+     * @throw std::runtime_error if this object type is not UniValue::OBJ nor UniValue::VARR
+     * @return the vector of all value objects
      */
     const std::vector<UniValue>& getValues() const;
+
     /**
-     *
+     * Get the stored value as boolean.
+     * @return true if the stored boolean type value is true, otherwise false.
+     * @throw std::runtime_error if the stored type is not UniValue::VBOOL
+     * @see isTrue()
+     * @see isFalse()
+     * @see isBool()
+     * @see getBool()
      */
     bool get_bool() const;
+
     /**
-     *
+     * Get the stored value as string.
+     * @return the stored string value.
+     * @throw std::runtime_error if the stored type is not UniValue::VSTR
+     * @see getValStr()
+     * @see isStr()
      */
     const std::string& get_str() const;
+
     /**
-     *
+     * Get the stored value as 32 bit integer.
+     * @return the stored number as 32 bit integer value.
+     * @throw std::runtime_error if the stored type is not UniValue::VNUM or the number is out of range of 32 bit integer.
+     * @see isNum()
+     * @see get_int64()
      */
     int get_int() const;
+
     /**
-     *
+     * Get the stored value as 64 bit integer.
+     * @return the stored number as 64 bit integer value.
+     * @throw std::runtime_error if the stored type is not UniValue::VNUM or the number is out of range of 64 bit integer.
+     * @see isNum()
+     * @see get_int()
      */
     int64_t get_int64() const;
+
     /**
-     *
+     * Get the stored value as double float value.
+     * @return the stored number as double float value.
+     * @throw std::runtime_error if the stored type is not UniValue::VNUM or the number is out of range of double float.
+     * @see isNum()
      */
     double get_real() const;
+
     /**
-     *
+     * Get the stored value as constant UniValue object.
+     * @return the stored object as read only UniValue object.
+     * @throw std::runtime_error if the stored type is not UniValue::OBJ.
+     * @see isObject()
      */
     const UniValue& get_obj() const;
+
     /**
-     *
+     * Get the stored value as constant UniValue object if array.
+     * @return the stored object as read only UniValue object of array.
+     * @throw std::runtime_error if the stored type is not UniValue::VARR
+     * @see isArray()
      */
     const UniValue& get_array() const;
 
     /**
-     *
+     * Get the current stored value type.
+     * @return the actual stored value type.
+     * @see UniValue::VType
      * @see getType()
      */
     enum VType type() const { return getType(); }
+
     /**
-     *
+     * Add new \a UniValue property to this object.
+     * Add a new key-value pair to this object, with \a pear as the std::pair of string and UniValue types.
+     * @see push_back()
+     * @see isObject()
+     * @return true if this is an object type and property was added successfully.
      */
     bool push_back(std::pair<std::string,UniValue> pear) {
         return pushKV(pear.first, pear.second);
     }
+
     /**
-     *
+     * Find in given object \a obj with given key \a name.
+     * @return the found read only value object for given key \a name, return \a NullUniValue if not found.
      */
     friend const UniValue& find_value( const UniValue& obj, const std::string& name);
 };
