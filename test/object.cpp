@@ -311,6 +311,19 @@ BOOST_AUTO_TEST_CASE(univalue_object)
     obj.clear();
     BOOST_CHECK(obj.empty());
     BOOST_CHECK_EQUAL(obj.size(), 0);
+    BOOST_CHECK_EQUAL(obj.getType(), UniValue::VNULL);
+
+    BOOST_CHECK_EQUAL(obj.setObject(), true);
+    UniValue uv;
+    uv.setInt(42);
+    obj.__pushKV("age", uv);
+    BOOST_CHECK_EQUAL(obj.size(), 1);
+    BOOST_CHECK_EQUAL(obj["age"].getValStr(), "42");
+
+    uv.setInt(43);
+    obj.pushKV("age", uv);
+    BOOST_CHECK_EQUAL(obj.size(), 1);
+    BOOST_CHECK_EQUAL(obj["age"].getValStr(), "43");
 }
 
 static const char *json1 =
