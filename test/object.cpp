@@ -324,6 +324,14 @@ BOOST_AUTO_TEST_CASE(univalue_object)
     obj.pushKV("age", uv);
     BOOST_CHECK_EQUAL(obj.size(), 1);
     BOOST_CHECK_EQUAL(obj["age"].getValStr(), "43");
+
+    obj.pushKV("name", "foo bar");
+
+    std::map<std::string,UniValue> kv;
+    obj.getObjMap(kv);
+    BOOST_CHECK_EQUAL(kv["age"].getValStr(), "43");
+    BOOST_CHECK_EQUAL(kv["name"].getValStr(), "foo bar");
+
 }
 
 static const char *json1 =
