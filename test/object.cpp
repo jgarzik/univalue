@@ -20,16 +20,16 @@
         try { \
             (stmt); \
         } catch (excMatch & e) { \
-	} catch (...) { \
-	    assert(0); \
-	} \
+        } catch (...) { \
+            assert(0); \
+        } \
     }
 #define BOOST_CHECK_NO_THROW(stmt) { \
         try { \
             (stmt); \
-	} catch (...) { \
-	    assert(0); \
-	} \
+        } catch (...) { \
+            assert(0); \
+        } \
     }
 
 BOOST_FIXTURE_TEST_SUITE(univalue_tests, BasicTestingSetup)
@@ -260,6 +260,12 @@ BOOST_AUTO_TEST_CASE(univalue_object)
     strKey = "temperature";
     BOOST_CHECK(obj.pushKV(strKey, (double) 90.012));
 
+    strKey = "booleanF";
+    BOOST_CHECK(obj.pushKV(strKey, (bool) false));
+
+    strKey = "booleanT";
+    BOOST_CHECK(obj.pushKV(strKey, (bool) true));
+
     UniValue obj2(UniValue::VOBJ);
     BOOST_CHECK(obj2.pushKV("cat1", 9000));
     BOOST_CHECK(obj2.pushKV("cat2", 12345));
@@ -267,7 +273,7 @@ BOOST_AUTO_TEST_CASE(univalue_object)
     BOOST_CHECK(obj.pushKVs(obj2));
 
     BOOST_CHECK_EQUAL(obj.empty(), false);
-    BOOST_CHECK_EQUAL(obj.size(), 9);
+    BOOST_CHECK_EQUAL(obj.size(), 11);
 
     BOOST_CHECK_EQUAL(obj["age"].getValStr(), "100");
     BOOST_CHECK_EQUAL(obj["first"].getValStr(), "John");
@@ -278,6 +284,8 @@ BOOST_AUTO_TEST_CASE(univalue_object)
     BOOST_CHECK_EQUAL(obj["temperature"].getValStr(), "90.012");
     BOOST_CHECK_EQUAL(obj["cat1"].getValStr(), "9000");
     BOOST_CHECK_EQUAL(obj["cat2"].getValStr(), "12345");
+    BOOST_CHECK_EQUAL(obj["booleanF"].getValStr(), "");
+    BOOST_CHECK_EQUAL(obj["booleanT"].getValStr(), "1");
 
     BOOST_CHECK_EQUAL(obj["nyuknyuknyuk"].getValStr(), "");
 
@@ -303,6 +311,8 @@ BOOST_AUTO_TEST_CASE(univalue_object)
     objTypes["temperature"] = UniValue::VNUM;
     objTypes["cat1"] = UniValue::VNUM;
     objTypes["cat2"] = UniValue::VNUM;
+    objTypes["booleanF"] = UniValue::VBOOL;
+    objTypes["booleanT"] = UniValue::VBOOL;
     BOOST_CHECK(obj.checkObject(objTypes));
 
     objTypes["cat2"] = UniValue::VSTR;
