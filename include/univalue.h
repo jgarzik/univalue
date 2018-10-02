@@ -14,7 +14,6 @@
 #include <map>
 #include <cassert>
 
-#include <sstream>        // .get_int64()
 #include <utility>        // std::pair
 
 class UniValue {
