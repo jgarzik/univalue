@@ -12,6 +12,18 @@
 
 const UniValue NullUniValue;
 
+UniValue::UniValue(const UniValue& other)
+{
+    typ = other.typ;
+    if (typ == VOBJ || typ == VARR) {
+        if (typ == VOBJ)
+            keys = other.keys;
+        values = other.values;
+    } else {
+        val = other.val;
+    }
+}
+
 void UniValue::clear()
 {
     typ = VNULL;
@@ -214,6 +226,28 @@ const UniValue& UniValue::operator[](size_t index) const
         return NullUniValue;
 
     return values.at(index);
+}
+
+bool UniValue::operator==(const UniValue& other) const
+{
+    // quick type check
+    if (typ != other.typ)
+        return false;
+
+    // no data for null; type match is sufficient.
+    if (typ == VNULL)
+        return true;
+
+    if (typ == VOBJ || typ == VARR) {
+        if (values != other.values)
+            return false;
+
+        if (typ == VOBJ)
+            return (keys == other.keys);
+        return true;
+    }
+
+    return (val == other.val);
 }
 
 const char *uvTypeName(UniValue::VType t)

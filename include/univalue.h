@@ -25,6 +25,8 @@ public:
         typ = initialType;
         val = initialStr;
     }
+    UniValue(const UniValue& other);
+
     UniValue(uint64_t val_) {
         setInt(val_);
     }
@@ -50,6 +52,15 @@ public:
     ~UniValue() {}
 
     void clear();
+    void reserve(size_t n) {
+        if (typ == VOBJ || typ == VARR) {
+            if (typ == VOBJ)
+                keys.reserve(n);
+            values.reserve(n);
+        } else if (typ != VNULL) {
+            val.reserve(n);
+        }
+    }
 
     bool setNull();
     bool setBool(bool val);
@@ -71,8 +82,14 @@ public:
     bool getBool() const { return isTrue(); }
     void getObjMap(std::map<std::string,UniValue>& kv) const;
     bool checkObject(const std::map<std::string,UniValue::VType>& memberTypes) const;
+
     const UniValue& operator[](const std::string& key) const;
     const UniValue& operator[](size_t index) const;
+    bool operator==(const UniValue& other) const;
+    bool operator!=(const UniValue& other) const {
+        return (!(*this == other));
+    }
+
     bool exists(const std::string& key) const { size_t i; return findKey(key, i); }
 
     bool isNull() const { return (typ == VNULL); }
