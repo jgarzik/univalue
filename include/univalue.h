@@ -73,6 +73,12 @@ public:
     bool checkObject(const std::map<std::string,UniValue::VType>& memberTypes) const;
     const UniValue& operator[](const std::string& key) const;
     const UniValue& operator[](size_t index) const;
+    const UniValue& at(const std::string& key) const {
+        return (*this)[key];
+    }
+    const UniValue& at(size_t index) const {
+        return (*this)[index];
+    }
     bool exists(const std::string& key) const { size_t i; return findKey(key, i); }
 
     bool isNull() const { return (typ == VNULL); }
