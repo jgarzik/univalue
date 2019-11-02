@@ -175,6 +175,29 @@ public:
     const UniValue& get_obj() const;
     const UniValue& get_array() const;
 
+    // Strict type-specific getters, these throw std::runtime_error if the
+    // value is of unexpected type, or return a default if it is null
+    bool get_bool(bool def) const {
+        if (typ == VNULL) return def;
+        return get_bool();
+    }
+    const std::string& get_str(const std::string& def) const {
+        if (typ == VNULL) return def;
+        return get_str();
+    }
+    int get_int(int def) const {
+        if (typ == VNULL) return def;
+        return get_int();
+    }
+    int64_t get_int64(int64_t def) const {
+        if (typ == VNULL) return def;
+        return get_int64();
+    }
+    double get_real(double def) const {
+        if (typ == VNULL) return def;
+        return get_real();
+    }
+
     enum VType type() const { return getType(); }
     bool push_back(std::pair<std::string,UniValue> pear) {
         return pushKV(pear.first, pear.second);
