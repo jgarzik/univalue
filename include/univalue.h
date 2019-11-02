@@ -79,6 +79,16 @@ public:
     const UniValue& at(size_t index) const {
         return (*this)[index];
     }
+    const UniValue& at(const std::string& key, const UniValue& def) const {
+        const UniValue& val = (*this)[key];
+        if (val.isNull()) return def;
+        return val;
+    }
+    const UniValue& at(size_t index, const UniValue& def) const {
+        const UniValue& val = (*this)[index];
+        if (val.isNull()) return def;
+        return val;
+    }
     bool exists(const std::string& key) const { size_t i; return findKey(key, i); }
 
     bool isNull() const { return (typ == VNULL); }
