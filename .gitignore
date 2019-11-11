@@ -20,6 +20,7 @@ libtool
 ltmain.sh
 test-suite.log
 
+*.tar.gz
 *.a
 *.la
 *.lo
