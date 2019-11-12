@@ -40,6 +40,9 @@ BOOST_AUTO_TEST_CASE(univalue_constructor)
     UniValue v1;
     BOOST_CHECK(v1.isNull());
 
+    UniValue v1_copy(v1);
+    BOOST_CHECK(v1_copy.isNull());
+
     UniValue v2(UniValue::VSTR);
     BOOST_CHECK(v2.isStr());
 
@@ -71,6 +74,10 @@ BOOST_AUTO_TEST_CASE(univalue_constructor)
     UniValue v7(vd);
     BOOST_CHECK(v7.isNum());
     BOOST_CHECK_EQUAL(v7.getValStr(), "-7.21");
+
+    UniValue v7_copy(v7);
+    BOOST_CHECK(v7_copy.isNum());
+    BOOST_CHECK_EQUAL(v7_copy.getValStr(), "-7.21");
 
     std::string vs("yawn");
     UniValue v8(vs);
@@ -142,6 +149,8 @@ BOOST_AUTO_TEST_CASE(univalue_set)
     BOOST_CHECK(v.isArray());
     BOOST_CHECK_EQUAL(v.size(), 0);
 
+    BOOST_CHECK(v.setStr(""));
+    v.reserve(3);
     BOOST_CHECK(v.setStr("zum"));
     BOOST_CHECK(v.isStr());
     BOOST_CHECK_EQUAL(v.getValStr(), "zum");
@@ -321,10 +330,14 @@ BOOST_AUTO_TEST_CASE(univalue_object)
     objTypes["cat2"] = UniValue::VSTR;
     BOOST_CHECK(!obj.checkObject(objTypes));
 
+    UniValue obj_copy(obj);
+    BOOST_CHECK(obj_copy == obj);
+
     obj.clear();
     BOOST_CHECK(obj.empty());
     BOOST_CHECK_EQUAL(obj.size(), 0);
     BOOST_CHECK_EQUAL(obj.getType(), UniValue::VNULL);
+    BOOST_CHECK(obj_copy != obj);
 
     BOOST_CHECK_EQUAL(obj.setObject(), true);
     UniValue uv;
