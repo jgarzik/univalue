@@ -28,9 +28,9 @@
 #define BOOST_CHECK_NO_THROW(stmt) { \
         try { \
             (stmt); \
-	} catch (...) { \
-	    assert(0); \
-	} \
+        } catch (...) { \
+            assert(0); \
+        } \
     }
 
 BOOST_FIXTURE_TEST_SUITE(univalue_tests, BasicTestingSetup)
@@ -266,11 +266,11 @@ BOOST_AUTO_TEST_CASE(univalue_object)
     strKey = "temperature";
     BOOST_CHECK(obj.pushKV(strKey, (double) 90.012));
 
-    strKey = "moon";
-    BOOST_CHECK(obj.pushKV(strKey, true));
+    strKey = "booleanF";
+    BOOST_CHECK(obj.pushKV(strKey, (bool) false));
 
-    strKey = "spoon";
-    BOOST_CHECK(obj.pushKV(strKey, false));
+    strKey = "booleanT";
+    BOOST_CHECK(obj.pushKV(strKey, (bool) true));
 
     UniValue obj2(UniValue::VOBJ);
     BOOST_CHECK(obj2.pushKV("cat1", 9000));
@@ -288,10 +288,10 @@ BOOST_AUTO_TEST_CASE(univalue_object)
     BOOST_CHECK_EQUAL(obj["time"].getValStr(), "3600");
     BOOST_CHECK_EQUAL(obj["calories"].getValStr(), "12");
     BOOST_CHECK_EQUAL(obj["temperature"].getValStr(), "90.012");
-    BOOST_CHECK_EQUAL(obj["moon"].getValStr(), "1");
-    BOOST_CHECK_EQUAL(obj["spoon"].getValStr(), "");
     BOOST_CHECK_EQUAL(obj["cat1"].getValStr(), "9000");
     BOOST_CHECK_EQUAL(obj["cat2"].getValStr(), "12345");
+    BOOST_CHECK_EQUAL(obj["booleanF"].getValStr(), "");
+    BOOST_CHECK_EQUAL(obj["booleanT"].getValStr(), "1");
 
     BOOST_CHECK_EQUAL(obj["nyuknyuknyuk"].getValStr(), "");
 
@@ -302,10 +302,10 @@ BOOST_AUTO_TEST_CASE(univalue_object)
     BOOST_CHECK(obj.exists("time"));
     BOOST_CHECK(obj.exists("calories"));
     BOOST_CHECK(obj.exists("temperature"));
-    BOOST_CHECK(obj.exists("moon"));
-    BOOST_CHECK(obj.exists("spoon"));
     BOOST_CHECK(obj.exists("cat1"));
     BOOST_CHECK(obj.exists("cat2"));
+    BOOST_CHECK(obj.exists("booleanF"));
+    BOOST_CHECK(obj.exists("booleanT"));
 
     BOOST_CHECK(!obj.exists("nyuknyuknyuk"));
 
@@ -317,10 +317,10 @@ BOOST_AUTO_TEST_CASE(univalue_object)
     objTypes["time"] = UniValue::VNUM;
     objTypes["calories"] = UniValue::VNUM;
     objTypes["temperature"] = UniValue::VNUM;
-    objTypes["moon"] = UniValue::VBOOL;
-    objTypes["spoon"] = UniValue::VBOOL;
     objTypes["cat1"] = UniValue::VNUM;
     objTypes["cat2"] = UniValue::VNUM;
+    objTypes["booleanF"] = UniValue::VBOOL;
+    objTypes["booleanT"] = UniValue::VBOOL;
     BOOST_CHECK(obj.checkObject(objTypes));
 
     objTypes["cat2"] = UniValue::VSTR;
