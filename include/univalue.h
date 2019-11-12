@@ -49,6 +49,15 @@ public:
     }
 
     void clear();
+    void reserve(size_t n) {
+        if (typ == VOBJ || typ == VARR) {
+            if (typ == VOBJ)
+                keys.reserve(n);
+            values.reserve(n);
+        } else if (typ != VNULL) {
+            val.reserve(n);
+        }
+    }
 
     bool setNull();
     bool setBool(bool val);
