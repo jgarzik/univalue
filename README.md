@@ -20,6 +20,8 @@ link-time optimization and embedded uses.
 
 ## Status
 
+**YOU ARE CURRENTLY VIEWING THE DEVELOPMENT BRANCH**.
+
 The current production version is available from the [stable-1.0.x branch](https://github.com/jgarzik/univalue/tree/stable-1.0.x).
 
 The current development series is 1.1.x, and is pushed to the `master` branch.
