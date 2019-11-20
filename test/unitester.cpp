@@ -113,6 +113,7 @@ static const char *filenames[] = {
         "fail40.json",               // invalid unicode: broken UTF-8
         "fail41.json",               // invalid unicode: unfinished UTF-8
         "fail42.json",               // valid json with garbage following a nul byte
+        "fail43.json",               // non-minimal utf-8 encoding ("\xc0\xaf" instead of "\x2f")
         "fail44.json",               // unterminated string
         "fail45.json",               // nested beyond max depth
         "fail3.json",

@@ -94,6 +94,7 @@ TEST_FILES = \
 	$(TEST_DATA_DIR)/fail40.json \
 	$(TEST_DATA_DIR)/fail41.json \
 	$(TEST_DATA_DIR)/fail42.json \
+	$(TEST_DATA_DIR)/fail43.json \
 	$(TEST_DATA_DIR)/fail44.json \
 	$(TEST_DATA_DIR)/fail45.json \
 	$(TEST_DATA_DIR)/fail3.json \
