@@ -76,6 +76,22 @@ public:
     bool checkObject(const std::map<std::string,UniValue::VType>& memberTypes) const;
     const UniValue& operator[](const std::string& key) const;
     const UniValue& operator[](size_t index) const;
+    const UniValue& at(const std::string& key) const {
+        return (*this)[key];
+    }
+    const UniValue& at(size_t index) const {
+        return (*this)[index];
+    }
+    const UniValue& at(const std::string& key, const UniValue& def) const {
+        const UniValue& val = (*this)[key];
+        if (val.isNull()) return def;
+        return val;
+    }
+    const UniValue& at(size_t index, const UniValue& def) const {
+        const UniValue& val = (*this)[index];
+        if (val.isNull()) return def;
+        return val;
+    }
     bool exists(const std::string& key) const { size_t i; return findKey(key, i); }
 
     bool isNull() const { return (typ == VNULL); }
@@ -125,6 +141,29 @@ public:
     double get_real() const;
     const UniValue& get_obj() const;
     const UniValue& get_array() const;
+
+    // Strict type-specific getters, these throw std::runtime_error if the
+    // value is of unexpected type, or return a default if it is null
+    bool get_bool(bool def) const {
+        if (typ == VNULL) return def;
+        return get_bool();
+    }
+    const std::string& get_str(const std::string& def) const {
+        if (typ == VNULL) return def;
+        return get_str();
+    }
+    int get_int(int def) const {
+        if (typ == VNULL) return def;
+        return get_int();
+    }
+    int64_t get_int64(int64_t def) const {
+        if (typ == VNULL) return def;
+        return get_int64();
+    }
+    double get_real(double def) const {
+        if (typ == VNULL) return def;
+        return get_real();
+    }
 
     enum VType type() const { return getType(); }
     friend const UniValue& find_value( const UniValue& obj, const std::string& name);
