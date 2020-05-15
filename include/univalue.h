@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or https://opensource.org/licenses/mit-license.php.
 
-#ifndef __UNIVALUE_H__
-#define __UNIVALUE_H__
+#ifndef UNIVALUE_H_
+#define UNIVALUE_H_
 
 #include <stdint.h>
 #include <string.h>
@@ -90,7 +90,7 @@ public:
     bool push_back(const UniValue& val);
     bool push_backV(const std::vector<UniValue>& vec);
 
-    void __pushKV(const std::string& key, const UniValue& val);
+    void _pushKV(const std::string& key, const UniValue& val);
     bool pushKV(const std::string& key, const UniValue& val);
     bool pushKVs(const UniValue& obj);
 
@@ -187,4 +187,4 @@ extern const UniValue NullUniValue;
 
 const UniValue& find_value( const UniValue& obj, const std::string& name);
 
-#endif // __UNIVALUE_H__
+#endif // UNIVALUE_H_
