@@ -14,7 +14,13 @@
 #include <map>
 #include <cassert>
 
+namespace {
+    struct UniValueStreamWriter;
+}
+
 class UniValue {
+    friend struct ::UniValueStreamWriter;
+
 public:
     enum VType { VNULL, VOBJ, VARR, VSTR, VNUM, VBOOL, };
 
@@ -110,8 +116,6 @@ private:
     std::vector<UniValue> values;
 
     bool findKey(const std::string& key, size_t& retIdx) const;
-    void writeArray(unsigned int prettyIndent, unsigned int indentLevel, std::string& s) const;
-    void writeObject(unsigned int prettyIndent, unsigned int indentLevel, std::string& s) const;
 
 public:
     // Strict type-specific getters, these throw std::runtime_error if the
