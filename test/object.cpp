@@ -350,6 +350,34 @@ BOOST_AUTO_TEST_CASE(univalue_object)
     BOOST_CHECK_EQUAL(kv["age"].getValStr(), "43");
     BOOST_CHECK_EQUAL(kv["name"].getValStr(), "foo bar");
 
+    obj = UniValue(UniValue::VOBJ);
+    BOOST_CHECK_EQUAL(obj.size(), 0);
+    BOOST_CHECK_EQUAL(obj.removeKey("unknownkey"), false);
+    BOOST_CHECK_EQUAL(obj.size(), 0);
+    obj.pushKV("age", uv);
+    BOOST_CHECK_EQUAL(obj.size(), 1);
+    BOOST_CHECK_EQUAL(obj["age"].getValStr(), "43");
+    BOOST_CHECK_EQUAL(obj.removeKey("unknownkey"), false);
+    BOOST_CHECK_EQUAL(obj.size(), 1);
+    BOOST_CHECK_EQUAL(obj.removeKey("age"), true);
+    BOOST_CHECK_EQUAL(obj.size(), 0);
+    BOOST_CHECK_EQUAL(obj.removeKey("age"), false);
+    obj.pushKV("age", uv);
+    obj.pushKV("name", "foo bar");
+    BOOST_CHECK_EQUAL(obj.removeKey("unknownkey"), false);
+    BOOST_CHECK_EQUAL(obj.size(), 2);
+    BOOST_CHECK_EQUAL(obj["age"].getValStr(), "43");
+    BOOST_CHECK_EQUAL(obj["name"].getValStr(), "foo bar");
+    BOOST_CHECK_EQUAL(obj.removeKey("age"), true);
+    BOOST_CHECK_EQUAL(obj.size(), 1);
+    BOOST_CHECK_EQUAL(obj["name"].getValStr(), "foo bar");
+    BOOST_CHECK_EQUAL(obj.removeKey("name"), true);
+    BOOST_CHECK_EQUAL(obj.size(), 0);
+    obj.pushKV("age", uv);
+    obj.pushKV("name", "foo bar");
+    BOOST_CHECK_EQUAL(obj.removeKey("name"), true);
+    BOOST_CHECK_EQUAL(obj.size(), 1);
+    BOOST_CHECK_EQUAL(obj["age"].getValStr(), "43");
 }
 
 static const char *json1 =

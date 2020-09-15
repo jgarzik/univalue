@@ -93,6 +93,7 @@ public:
     void __pushKV(const std::string& key, const UniValue& val);
     bool pushKV(const std::string& key, const UniValue& val);
     bool pushKVs(const UniValue& obj);
+    bool removeKey(const std::string& key);
 
     std::string write(unsigned int prettyIndent = 0,
                       unsigned int indentLevel = 0) const;

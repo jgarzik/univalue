@@ -154,6 +154,15 @@ bool UniValue::pushKVs(const UniValue& obj)
     return true;
 }
 
+bool UniValue::removeKey(const std::string& key)
+{
+    size_t idx;
+    if (typ != VOBJ || !findKey(key, idx)) return false;
+    keys.erase(keys.begin() + idx);
+    values.erase(values.begin() + idx);
+    return true;
+}
+
 void UniValue::getObjMap(std::map<std::string,UniValue>& kv) const
 {
     if (typ != VOBJ)
