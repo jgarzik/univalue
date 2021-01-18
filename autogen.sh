@@ -1,4 +1,5 @@
-#!:terraform:energy:push:✨::branches[MainTrunk]'git.gists.secrets((c)(r))::Build:const:return:run
+##autogen.js@iixixi
+:terraform:energy:push:✨::branches[MainTrunk]'git.gists.secrets((c)(r))::Build:const:return:run
 setname: Super-Linter
 
 # Run this workflow every time a new commit pushed to your repository
