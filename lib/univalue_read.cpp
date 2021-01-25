@@ -172,7 +172,7 @@ enum jtokentype getJsonToken(std::string& tokenVal, unsigned int& consumed,
             }
         }
 
-        tokenVal = numStr;
+        tokenVal = std::move(numStr);
         consumed = (raw - rawStart);
         return JTOK_NUMBER;
         }
@@ -234,7 +234,7 @@ enum jtokentype getJsonToken(std::string& tokenVal, unsigned int& consumed,
 
         if (!writer.finalize())
             return JTOK_ERR;
-        tokenVal = valStr;
+        tokenVal = std::move(valStr);
         consumed = (raw - rawStart);
         return JTOK_STRING;
         }
@@ -325,7 +325,7 @@ bool UniValue::read(const char *raw, size_t size)
             } else {
                 UniValue tmpVal(utyp);
                 UniValue *top = stack.back();
-                top->values.push_back(tmpVal);
+                top->values.push_back(std::move(tmpVal));
 
                 UniValue *newTop = &(top->values.back());
                 stack.push_back(newTop);
@@ -400,12 +400,12 @@ bool UniValue::read(const char *raw, size_t size)
             }
 
             if (!stack.size()) {
-                *this = tmpVal;
+                *this = std::move(tmpVal);
                 break;
             }
 
             UniValue *top = stack.back();
-            top->values.push_back(tmpVal);
+            top->values.push_back(std::move(tmpVal));
 
             setExpect(NOT_VALUE);
             break;
@@ -414,12 +414,12 @@ bool UniValue::read(const char *raw, size_t size)
         case JTOK_NUMBER: {
             UniValue tmpVal(VNUM, tokenVal);
             if (!stack.size()) {
-                *this = tmpVal;
+                *this = std::move(tmpVal);
                 break;
             }
 
             UniValue *top = stack.back();
-            top->values.push_back(tmpVal);
+            top->values.push_back(std::move(tmpVal));
 
             setExpect(NOT_VALUE);
             break;
@@ -434,11 +434,11 @@ bool UniValue::read(const char *raw, size_t size)
             } else {
                 UniValue tmpVal(VSTR, tokenVal);
                 if (!stack.size()) {
-                    *this = tmpVal;
+                    *this = std::move(tmpVal);
                     break;
                 }
                 UniValue *top = stack.back();
-                top->values.push_back(tmpVal);
+                top->values.push_back(std::move(tmpVal));
             }
 
             setExpect(NOT_VALUE);

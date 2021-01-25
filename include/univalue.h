@@ -20,6 +20,7 @@ public:
 
     UniValue() : typ(VNULL) {}
     UniValue(UniValue::VType type, const std::string& value = std::string()) : typ(type), val(value) {}
+    UniValue(UniValue::VType type, std::string&& value) : typ(type), val(std::move(value)) {}
     UniValue(uint64_t val_) {
         setInt(val_);
     }
@@ -38,9 +39,11 @@ public:
     UniValue(const std::string& val_) {
         setStr(val_);
     }
+    UniValue(std::string&& val_) {
+        setStr(std::move(val_));
+    }
     UniValue(const char *val_) {
-        std::string s(val_);
-        setStr(s);
+        setStr(std::string(val_));
     }
 
     void clear();
@@ -57,11 +60,13 @@ public:
     bool setNull();
     bool setBool(bool val);
     bool setNumStr(const std::string& val);
+    bool setNumStr(std::string&& val);
     bool setInt(uint64_t val);
     bool setInt(int64_t val);
     bool setInt(int val_) { return setInt((int64_t)val_); }
     bool setFloat(double val);
     bool setStr(const std::string& val);
+    bool setStr(std::string&& val);
     bool setArray();
     bool setObject();
 
@@ -88,11 +93,22 @@ public:
     bool isObject() const { return (typ == VOBJ); }
 
     bool push_back(const UniValue& val);
+    bool push_back(UniValue&& val);
     bool push_backV(const std::vector<UniValue>& vec);
+    bool push_backV(std::vector<UniValue>&& vec);
 
     void __pushKV(const std::string& key, const UniValue& val);
+    void __pushKV(const std::string& key, UniValue&& val);
+    void __pushKV(std::string&& key, const UniValue& val);
+    void __pushKV(std::string&& key, UniValue&& val);
+
     bool pushKV(const std::string& key, const UniValue& val);
+    bool pushKV(const std::string& key, UniValue&& val);
+    bool pushKV(std::string&& key, const UniValue& val);
+    bool pushKV(std::string&& key, UniValue&& val);
+
     bool pushKVs(const UniValue& obj);
+    bool pushKVs(UniValue&& obj);
 
     std::string write(unsigned int prettyIndent = 0,
                       unsigned int indentLevel = 0) const;
@@ -110,6 +126,7 @@ private:
     std::vector<UniValue> values;
 
     bool findKey(const std::string& key, size_t& retIdx) const;
+    void write(unsigned int prettyIndent, unsigned int indentLevel, std::string& s) const;
     void writeArray(unsigned int prettyIndent, unsigned int indentLevel, std::string& s) const;
     void writeObject(unsigned int prettyIndent, unsigned int indentLevel, std::string& s) const;
 
