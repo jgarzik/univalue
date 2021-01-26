@@ -47,9 +47,9 @@ void UniValue::write(unsigned int prettyIndent,
         writeArray(prettyIndent, modIndent, s);
         break;
     case VSTR:
-        s += "\"";
+        s += '"';
         json_escape(val, s);
-        s += "\"";
+        s += '"';
         break;
     case VNUM:
         s += val;
@@ -67,49 +67,49 @@ static void indentStr(unsigned int prettyIndent, unsigned int indentLevel, std::
 
 void UniValue::writeArray(unsigned int prettyIndent, unsigned int indentLevel, std::string& s) const
 {
-    s += "[";
+    s += '[';
     if (prettyIndent)
-        s += "\n";
+        s += '\n';
 
     for (unsigned int i = 0; i < values.size(); i++) {
         if (prettyIndent)
             indentStr(prettyIndent, indentLevel, s);
         values[i].write(prettyIndent, indentLevel + 1, s);
         if (i != (values.size() - 1)) {
-            s += ",";
+            s += ',';
         }
         if (prettyIndent)
-            s += "\n";
+            s += '\n';
     }
 
     if (prettyIndent)
         indentStr(prettyIndent, indentLevel - 1, s);
-    s += "]";
+    s += ']';
 }
 
 void UniValue::writeObject(unsigned int prettyIndent, unsigned int indentLevel, std::string& s) const
 {
-    s += "{";
+    s += '{';
     if (prettyIndent)
-        s += "\n";
+        s += '\n';
 
     for (unsigned int i = 0; i < keys.size(); i++) {
         if (prettyIndent)
             indentStr(prettyIndent, indentLevel, s);
-        s += "\"";
+        s += '\"';
         json_escape(keys[i], s);
         s += "\":";
         if (prettyIndent)
-            s += " ";
+            s += ' ';
         values.at(i).write(prettyIndent, indentLevel + 1, s);
         if (i != (values.size() - 1))
-            s += ",";
+            s += ',';
         if (prettyIndent)
-            s += "\n";
+            s += '\n';
     }
 
     if (prettyIndent)
         indentStr(prettyIndent, indentLevel - 1, s);
-    s += "}";
+    s += '}';
 }
 
