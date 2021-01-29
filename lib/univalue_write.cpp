@@ -1,9 +1,8 @@
 // Copyright 2014 BitPay Inc.
 // Distributed under the MIT software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+// file COPYING or https://opensource.org/licenses/mit-license.php.
 
 #include <iomanip>
-#include <sstream>
 #include <stdio.h>
 #include "univalue.h"
 #include "univalue_escapes.h"
